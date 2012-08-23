@@ -4,6 +4,8 @@
 .project
 .settings
 *.iml
+*.ipr
+*.iws
 bin
 build
 out
