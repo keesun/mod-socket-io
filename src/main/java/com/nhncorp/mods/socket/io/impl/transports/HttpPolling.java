@@ -4,8 +4,8 @@ import com.nhncorp.mods.socket.io.impl.ClientData;
 import com.nhncorp.mods.socket.io.impl.Manager;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.core.logging.Logger;
-import org.vertx.java.core.logging.impl.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @see <a href="https://github.com/LearnBoost/socket.io/blob/master/lib/transports/http-polling.js">http-polling.js</a>

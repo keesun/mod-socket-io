@@ -1,9 +1,9 @@
 package com.nhncorp.mods.socket.io.impl.handlers;
 
 import com.nhncorp.mods.socket.io.impl.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.java.core.logging.Logger;
-import org.vertx.java.core.logging.impl.LoggerFactory;
 
 import java.util.Map;
 import java.util.UUID;
