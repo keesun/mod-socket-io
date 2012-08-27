@@ -23,13 +23,13 @@ You can configure everything that you can configure in the [Socket.io](https://g
 First, you should include this module's resource by `includes:`.
 
 	{
-		"main": "your.runnable.ClassName",
+		"main": "package.to.your.RunnableClassName",
 		"includes": "nhn.socket-io-v0.9"
 	}
 
 And, after you put the module's jar file to you module's classpath. You can code like:
 
-	public class ClassName extends BusModBase {
+	public class RunnableClassName extends BusModBase {
 
 		@Override
 		public void start() {
