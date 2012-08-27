@@ -2,9 +2,9 @@ package com.nhncorp.mods.socket.io.impl.transports;
 
 import com.nhncorp.mods.socket.io.impl.ClientData;
 import com.nhncorp.mods.socket.io.impl.Manager;
-import org.vertx.java.core.json.impl.Json;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vertx.java.core.json.impl.Json;
 
 import java.util.Map;
 

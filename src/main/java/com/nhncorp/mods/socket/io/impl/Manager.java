@@ -5,6 +5,8 @@ import com.nhncorp.mods.socket.io.impl.handlers.HandshakeHandler;
 import com.nhncorp.mods.socket.io.impl.handlers.HttpRequestHandler;
 import com.nhncorp.mods.socket.io.impl.handlers.StaticHandler;
 import com.nhncorp.mods.socket.io.impl.transports.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.eventbus.Message;
@@ -14,8 +16,6 @@ import org.vertx.java.core.http.ServerWebSocket;
 import org.vertx.java.core.impl.VertxInternal;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.vertx.java.core.net.NetSocket;
 
 import java.util.Collection;

@@ -3,12 +3,12 @@ package com.nhncorp.mods.socket.io.impl.transports;
 import com.nhncorp.mods.socket.io.impl.ClientData;
 import com.nhncorp.mods.socket.io.impl.Manager;
 import com.nhncorp.mods.socket.io.impl.Transport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServerResponse;
 import org.vertx.java.core.json.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

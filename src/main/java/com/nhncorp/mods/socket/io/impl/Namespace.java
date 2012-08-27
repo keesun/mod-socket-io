@@ -1,12 +1,12 @@
 package com.nhncorp.mods.socket.io.impl;
 
 import com.nhncorp.mods.socket.io.SocketIOSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.EventBus;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.vertx.java.core.shareddata.Shareable;
 
 import java.util.Map;

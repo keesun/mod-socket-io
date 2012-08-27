@@ -61,6 +61,9 @@ task copyMod( type:Copy, dependsOn: 'classes' ) {
   into( 'lib' ) {
     from configurations.compile
   }
+  into( 'static' ) {
+    from 'build/resources/main'
+  }
 }
 
 // Package into build/libs/mod.zip

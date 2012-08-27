@@ -4,6 +4,7 @@ import com.nhncorp.mods.socket.io.impl.Configurer;
 import com.nhncorp.mods.socket.io.impl.DefaultSocketIOServer;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.Vertx;
+import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.impl.VertxInternal;
 import org.vertx.java.core.json.JsonObject;
@@ -15,7 +16,7 @@ public class SocketIOServerTest {
 
 	public static void main(String[] args) throws InterruptedException {
 		int port = 9090;
-		Vertx vertx = Vertx.newVertx();
+		final Vertx vertx = Vertx.newVertx();
 		HttpServer httpServer = vertx.createHttpServer();
 
 		SocketIOServer io = new DefaultSocketIOServer((VertxInternal) vertx, httpServer);
