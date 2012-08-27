@@ -19,7 +19,7 @@ public class SocketIOServerTest {
 		final Vertx vertx = Vertx.newVertx();
 		HttpServer httpServer = vertx.createHttpServer();
 
-		SocketIOServer io = new DefaultSocketIOServer((VertxInternal) vertx, httpServer);
+		SocketIOServer io = new DefaultSocketIOServer(vertx, httpServer);
 		io.configure(new Configurer() {
 			public void configure(JsonObject config) {
 				config.putString("transports", "websocket,flashsocket,xhr-polling,jsonp-polling,htmlfile");

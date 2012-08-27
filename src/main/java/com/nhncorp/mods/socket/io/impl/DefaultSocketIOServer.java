@@ -3,6 +3,7 @@ package com.nhncorp.mods.socket.io.impl;
 import com.nhncorp.mods.socket.io.SocketIOServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vertx.java.core.Vertx;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.http.RouteMatcher;
 import org.vertx.java.core.impl.VertxInternal;
@@ -24,8 +25,8 @@ public class DefaultSocketIOServer implements SocketIOServer {
 
 	private RouteMatcher rm;
 
-	public DefaultSocketIOServer(final VertxInternal vertx, final HttpServer httpServer) {
-		this.vertx = vertx;
+	public DefaultSocketIOServer(final Vertx vertx, final HttpServer httpServer) {
+		this.vertx = (VertxInternal) vertx;
 		this.config = new JsonObject();
 		this.config.putString("namespace", "/socket.io");
 		this.manager = new Manager(this.vertx, httpServer);
