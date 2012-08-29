@@ -25,58 +25,39 @@ You can configure everything that you can configure in the [Socket.io](https://g
 You can use this module in a simple Verticle like:
 
 ```java
-	package com.nhncorp.mods.socket.io;
-
-	import com.nhncorp.mods.socket.io.impl.Configurer;
+	import com.nhncorp.mods.socket.io.SocketIOServer;
+	import com.nhncorp.mods.socket.io.SocketIOSocket;
 	import com.nhncorp.mods.socket.io.impl.DefaultSocketIOServer;
 	import org.vertx.java.core.Handler;
-	import org.vertx.java.core.Vertx;
-	import org.vertx.java.core.eventbus.Message;
 	import org.vertx.java.core.http.HttpServer;
-	import org.vertx.java.core.impl.VertxInternal;
 	import org.vertx.java.core.json.JsonObject;
+	import org.vertx.java.deploy.Verticle;
 
 	/**
 	 * @author Keesun Baik
 	 */
-	public class SocketIOServerTest {
+	public class SampleVerticle extends Verticle {
 
-		public static void main(String[] args) throws InterruptedException {
+		@Override
+		public void start() throws Exception {
 			int port = 9090;
-			final Vertx vertx = Vertx.newVertx();
-			HttpServer httpServer = vertx.createHttpServer();
-
-			SocketIOServer io = new DefaultSocketIOServer(vertx, httpServer);
-			io.configure(new Configurer() {
-				public void configure(JsonObject config) {
-					config.putString("transports", "websocket,flashsocket,xhr-polling,jsonp-polling,htmlfile");
-				}
-			});
+			HttpServer server = vertx.createHttpServer();
+			SocketIOServer io = new DefaultSocketIOServer(vertx, server);
 
 			io.sockets().onConnection(new Handler<SocketIOSocket>() {
 				public void handle(final SocketIOSocket socket) {
-					System.out.println(socket.getId() + " is connected.");
-
 					socket.on("timer", new Handler<JsonObject>() {
-						public void handle(JsonObject data) {
-	 						socket.emit("timer", data);
-						}
-					});
-
-					socket.onDisconnect(new Handler<JsonObject>() {
 						public void handle(JsonObject event) {
-							System.out.println(socket.getId() + " is disconnected.");
+							socket.emit("timer", event);
 						}
 					});
 				}
 			});
 
-			httpServer.listen(port);
-			System.out.println("Server is running on http://localhost:" + port);
-			Thread.sleep(Long.MAX_VALUE);
+			System.out.println("server is running on http://localshot:" + port);
+			server.listen(port);
 		}
-
-	}
+}
 ```
 
 The code is located in `samples/verticle/SampleVerticle.java`.
