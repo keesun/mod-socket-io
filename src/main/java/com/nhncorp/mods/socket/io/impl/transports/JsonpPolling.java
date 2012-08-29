@@ -52,7 +52,7 @@ public class JsonpPolling extends HttpPolling {
 		headers.put("Connection", "Keep-Alive");
 		headers.put("X-XSS-Protection", "0");
 		response.write(data);
-		if(log.isInfoEnabled()) log.info(getName() + " writing " + data);
+		log.debug(getName() + " writing " + data);
 	}
 
 	@Override

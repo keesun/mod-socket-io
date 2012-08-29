@@ -110,7 +110,7 @@ public abstract class Http extends Transport {
 	 */
 	protected void onData(Buffer data) {
 		List<JsonObject> messages = parser.decodePayload(data);
-		if(log.isInfoEnabled()) log.info(getName() + " received data packet " + data);
+		log.debug(getName() + " received data packet " + data);
 		for(JsonObject message : messages) {
 			onMessage(message);
 		}

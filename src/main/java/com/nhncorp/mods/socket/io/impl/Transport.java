@@ -57,7 +57,7 @@ public abstract class Transport implements Shareable {
 	 */
 	protected void handleRequest() {
 		if(request != null) {
-			if(log.isInfoEnabled()) log.info("setting request " + request.method + " " + request.uri);
+			log.debug("setting request " + request.method + " " + request.uri);
 		}
 
 		if(clientData.getSocket() != null || request.method.toUpperCase().equals("GET")) {
@@ -130,7 +130,7 @@ public abstract class Transport implements Shareable {
 	 */
 	public void onForcedDisconnect() {
 		if(!this.isDisconnected()) {
-			if(log.isInfoEnabled()) log.info("transport end by forced client disconnection");
+			log.info("transport end by forced client disconnection");
 			if(this.isOpen()) {
 				JsonObject packet = new JsonObject();
 				packet.putString("type", "disconnect");
@@ -165,8 +165,7 @@ public abstract class Transport implements Shareable {
 				}
 			});
 
-//			if(log.isDebugEnabled()) log.debug("set heartbeat interval for client " + this.sessionId);
-			if(log.isInfoEnabled()) log.info("set heartbeat interval for client " + this.sessionId);
+			log.debug("set heartbeat interval for client " + this.sessionId);
 		}
 	}
 
@@ -177,8 +176,7 @@ public abstract class Transport implements Shareable {
 	 */
 	private void heartbeat() {
 		if(this.isOpen()) {
-//			if(log.isDebugEnabled()) log.debug("emitting heartbeat for client " + this.sessionId);
-			if(log.isInfoEnabled()) log.info("emitting heartbeat for client " + this.sessionId);
+			log.debug("emitting heartbeat for client " + this.sessionId);
 			JsonObject heartbeat = new JsonObject();
 			heartbeat.putString("type", "heartbeat");
 			this.packet(heartbeat);
@@ -195,12 +193,12 @@ public abstract class Transport implements Shareable {
 		if(this.heartbeatTimeout == -1l && manager.getSettings().isHeartbeats()) {
 			this.heartbeatTimeout = vertx.setTimer(manager.getSettings().getHeartbeatTimeout() * 1000, new Handler<Long>() {
 				public void handle(Long event) {
-					if(log.isDebugEnabled()) log.debug("fired heartbeat timeout for client " + sessionId);
+					log.debug("fired heartbeat timeout for client " + sessionId);
 					heartbeatTimeout = -1l;
 					end("heartbeat timeout");
 				}
 			});
-			if(log.isDebugEnabled()) log.debug("set heartbeat timeout for client " + sessionId);
+			log.debug("set heartbeat timeout for client " + sessionId);
 		}
 	}
 
@@ -218,7 +216,7 @@ public abstract class Transport implements Shareable {
 		packet.putString("reason", reason);
 		packet.putString("advice", advice);
 
-		if(log.isDebugEnabled()) log.debug(reason + ((advice != null) ? ("client should " + advice) : ""));
+		log.debug(reason + ((advice != null) ? ("client should " + advice) : ""));
 		this.end("error");
 	}
 
@@ -230,7 +228,7 @@ public abstract class Transport implements Shareable {
 	 */
 	protected void end(String reason) {
 		if(!this.isDisconnected()) {
-	   	    if(log.isInfoEnabled()) log.info("transport end (" + reason + ")");
+	   	    log.info("transport end (" + reason + ")");
 			Transport local = manager.getTranport(sessionId);
 			this.close();
 			this.clearTimeouts();
@@ -265,7 +263,7 @@ public abstract class Transport implements Shareable {
 	 * @return
 	 */
 	public Transport discard() {
-		if(log.isInfoEnabled()) log.info("discarding transport");
+		log.debug("discarding transport");
 		this.isDiscarded = true;
 		this.clearTimeouts();
 		this.clearHandlers();
@@ -302,10 +300,10 @@ public abstract class Transport implements Shareable {
 			if(isDrained()) {
 				write(encodedPacket);
 			} else {
-				if(log.isDebugEnabled()) log.debug("'ignoring volatile packet, buffer not drained");
+				log.debug("ignoring volatile packet, buffer not drained");
 			}
 		} else {
-			if(log.isDebugEnabled()) log.debug("''ignoring volatile packet, transport not open");
+			log.debug("ignoring volatile packet, transport not open");
 		}
 	}
 
@@ -351,13 +349,13 @@ public abstract class Transport implements Shareable {
 		if(this.closeTimeout != -1l) {
 			this.closeTimeout = vertx.setTimer(this.manager.getSettings().getCloseTimeout() * 1000, new Handler<Long>() {
 				public void handle(Long event) {
-					if(log.isDebugEnabled()) log.debug("fired close timeout for client " + sessionId);
+					log.debug("fired close timeout for client " + sessionId);
 					closeTimeout = -1l;
 					end("close timeout");
 				}
 			});
 
-			if(log.isInfoEnabled()) log.info("set close timeout for client " + sessionId);
+			log.debug("set close timeout for client " + sessionId);
 		}
 	}
 
@@ -386,7 +384,7 @@ public abstract class Transport implements Shareable {
 		if (this.heartbeatTimeout != -1l && this.manager.getSettings().isHeartbeats()) {
 			vertx.cancelTimer(heartbeatTimeout);
 			this.heartbeatTimeout = -1l;
-			if(log.isInfoEnabled()) log.info("cleared heartbeat timeout for client " + this.sessionId);
+			log.debug("cleared heartbeat timeout for client " + this.sessionId);
 		}
 	}
 
@@ -399,7 +397,7 @@ public abstract class Transport implements Shareable {
 		if(this.heartbeatInterval != -1l && this.manager.getSettings().isHeartbeats()) {
 			vertx.cancelTimer(heartbeatInterval);
 			this.heartbeatInterval = -1l;
-			if(log.isInfoEnabled()) log.info("cleared heartbeat interval for client " + this.sessionId);
+			log.debug("cleared heartbeat interval for client " + this.sessionId);
 		}
 	}
 
@@ -412,7 +410,7 @@ public abstract class Transport implements Shareable {
 		if(this.closeTimeout != -1l) {
 			vertx.cancelTimer(this.closeTimeout);
 			this.closeTimeout = -1l;
-			if(log.isInfoEnabled()) log.info("cleared close timeout for client " + this.sessionId);
+			log.debug("cleared close timeout for client " + this.sessionId);
 		}
 	}
 
@@ -426,7 +424,7 @@ public abstract class Transport implements Shareable {
 		Transport current = manager.getTranport(this.sessionId);
 
 		if(packet.getString("type").equals("heartbeat")) {
-			if(log.isInfoEnabled()) log.info("got heartbeat packet");
+			log.debug("got heartbeat packet");
 
 			if(current != null && current.isOpen()) {
 				current.onHeartbeatClear();
@@ -435,7 +433,7 @@ public abstract class Transport implements Shareable {
 			}
 		} else {
 			if(packet.getString("type").equals("disconnect") && packet.getString("endpoint").equals("")) {
-				if(log.isInfoEnabled()) log.info("got disconnection packet");
+				log.debug("got disconnection packet");
 				if(current != null) {
 					current.onForcedDisconnect();
 				} else {
@@ -445,7 +443,7 @@ public abstract class Transport implements Shareable {
 			}
 
 			if(packet.getString("id") != null && !packet.getString("ack").equals("data")) {
-				if(log.isDebugEnabled()) log.debug("acknowledging packet automatically");
+				log.debug("acknowledging packet automatically");
 				JsonObject ackPacket = new JsonObject();
 				ackPacket.putString("type", "ack");
 				ackPacket.putString("ackId", packet.getString("id"));

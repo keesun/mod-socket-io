@@ -36,7 +36,11 @@ public class SocketIOServerTest {
 					}
 				});
 
-				socket.onDisconnect(socket.getId() + " is disconnected");
+				socket.onDisconnect(new Handler<JsonObject>() {
+					public void handle(JsonObject event) {
+						System.out.println(socket.getId() + " is disconnected.");
+					}
+				});
 			}
 		});
 

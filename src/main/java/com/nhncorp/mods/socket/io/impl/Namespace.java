@@ -217,14 +217,12 @@ public class Namespace implements Shareable {
 		if (this.authHandler != null) {
 			authHandler.handle(handshakeData, new AuthorizationCallback() {
 				public void handle(Exception e, boolean isAuthorized) {
-					if (log.isInfoEnabled())
-						log.info("client " + (isAuthorized ? "" : "un") + "authorized for " + name);
+					log.debug("client " + (isAuthorized ? "" : "un") + "authorized for " + name);
 					authCallback.handle(e, isAuthorized);
 				}
 			});
 		} else {
-			if (log.isInfoEnabled())
-				log.info("client authorized for " + this.getName());
+			log.debug("client authorized for " + this.getName());
 			authCallback.handle(null, true);
 		}
 	}
@@ -284,8 +282,7 @@ public class Namespace implements Shareable {
 					if (ackHandler != null) {
 						ackHandler.handle(packet.getArray("args"));
 					} else {
-						if (log.isInfoEnabled())
-							log.info("unknown ack packet");
+						log.info("unknown ack packet");
 					}
 				}
 				break;
@@ -293,8 +290,7 @@ public class Namespace implements Shareable {
 			case "event":
 				// check if the emitted event is not blacklisted
 				if (manager.getSettings().getBlacklist().indexOf(packet.getString("name")) != -1) {
-					if (log.isInfoEnabled())
-						log.info("ignoring blacklisted event \'" + packet.getString("name") + "\'");
+					log.debug("ignoring blacklisted event \'" + packet.getString("name") + "\'");
 				} else {
 					JsonObject params = new JsonObject();
 					params.putArray("args", packet.getArray("args"));
@@ -342,8 +338,7 @@ public class Namespace implements Shareable {
 	 * @param e
 	 */
 	private void error(SocketIOSocket socket, Exception e) {
-		if (log.isDebugEnabled())
-			log.debug("hnadshake error " + e.getMessage() + " for " + this.name);
+		log.warn("handshake error " + e.getMessage() + " for " + this.name);
 		JsonObject packet = new JsonObject();
 		packet.putString("type", "error");
 		packet.putString("reason", e.getMessage());

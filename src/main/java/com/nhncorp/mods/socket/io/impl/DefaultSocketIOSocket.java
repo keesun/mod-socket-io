@@ -102,7 +102,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 */
 	public synchronized void packet(JsonObject packet) {
 		if(this.flags.getBoolean("broadcast", false)) {
-			if(log.isDebugEnabled())  log.debug("broadcasting packet");
+			log.debug("broadcasting packet");
 			this.namespace.in(this.flags.getString("room")).except(this.getId()).packet(packet);
 		} else {
 			packet.putString("endpoint", this.flags.getString("endpoint"));
@@ -247,7 +247,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 			}
 			handler.handle(packet);
 		} else {
-			log.info("handler not found \'" + name + "\'");
+			log.info("handler not found for \'" + name + "\'");
 		}
 	}
 

@@ -82,11 +82,11 @@ public abstract class HttpPolling extends Http {
 					JsonObject packet = new JsonObject();
 					packet.putString("type", "noop");
 					packet(packet);
-					if(log.isDebugEnabled()) log.debug(name + " closed due to exceeded duration");
+					log.debug(name + " closed due to exceeded duration");
 				}
 			});
 
-			if(log.isInfoEnabled()) log.info("setting poll timeout");
+			log.debug("setting poll timeout");
 		}
 	}
 

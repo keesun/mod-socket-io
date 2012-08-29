@@ -34,10 +34,10 @@ repositories {
 }
 
 dependencies {
-  compile       "org.slf4j:slf4j-api:$slf4jVersion"
-  compile       "org.slf4j:slf4j-log4j12:$slf4jVersion"
-  provided      "org.vert-x:vertx-core:$vertxVersion"
-  provided      "org.vert-x:vertx-platform:$vertxVersion"
+  compile      "org.slf4j:slf4j-api:$slf4jVersion"
+  compile      "ch.qos.logback:logback-classic:1.0.6"
+  provided     "org.vert-x:vertx-core:$vertxVersion"
+  provided     "org.vert-x:vertx-platform:$vertxVersion"
 
   testCompile  "org.vert-x:vertx-lang-java:$vertxVersion"
   testCompile  "org.vert-x:vertx-lang-rhino:$vertxVersion"

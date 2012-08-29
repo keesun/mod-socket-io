@@ -71,6 +71,6 @@ public class HtmlFile extends Http {
 			}
 		});
 
-		if(log.isDebugEnabled()) log.debug(this.getName() + " writing " + data);
+		log.debug(this.getName() + " writing " + data);
 	}
 }

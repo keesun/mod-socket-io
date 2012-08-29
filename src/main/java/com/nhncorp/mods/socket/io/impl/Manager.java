@@ -146,8 +146,7 @@ public class Manager {
 
 				if (clientData.getProtocol() != 1) {
 					writeError(req, 500, "Protocol version not supported");
-					if (log.isInfoEnabled())
-						log.info("client protocol version unsupported");
+					log.info("client protocol version unsupported");
 					return;
 				} else {
 					if (clientData.getId() != null) {

@@ -54,8 +54,8 @@ public class HttpRequestHandler {
 		}
 
 		if(!settings.getTransports().contains(clientData.getTransport())) {
-			String message = "unkown transport: '" + clientData.getTransport() + '"';
-			if(log.isDebugEnabled()) log.debug(message);
+			String message = "unknown transport: '" + clientData.getTransport() + '"';
+			log.warn(message);
 			manager.writeError(request, 500, message);
 			return;
 		}

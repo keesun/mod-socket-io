@@ -35,7 +35,7 @@ public class HandshakeHandler {
 		final HttpServerRequest request = clientData.getRequest();
 		final Settings settings = manager.getSettings();
 
-		if (log.isTraceEnabled()) log.trace("In handshake handler");
+		log.trace("In handshake handler");
 		Map<String, String> reqHeaders = request.headers();
 		final Map<String, Object> resHeaders = request.response.headers();
 		String reqOrigin = reqHeaders.get("Origin");
@@ -78,10 +78,10 @@ public class HandshakeHandler {
 
 					manager.getHandshaken().put(id, handshakeData);
 					// self.store.publish('handshake', id, newData || handshakeData);
-					if(log.isInfoEnabled()) log.info("handshake authorized " + id);
+					log.info("handshake authorized " + id);
 				} else {
 					manager.writeError(request, 403, "handshake unauthorized");
-					if (log.isInfoEnabled()) log.info("handshake unauthorized");
+					log.info("handshake unauthorized");
 				}
 			}
 		});
@@ -105,12 +105,12 @@ public class HandshakeHandler {
 			globalAuthHandler.handle(handshakeData, new AuthorizationCallback() {
 				@Override
 				public void handle(Exception e, boolean isAuthorized) {
-					if(log.isDebugEnabled()) log.debug("client " + (isAuthorized ? "authorized" : "unauthorized"));
+					log.debug("client " + (isAuthorized ? "authorized" : "unauthorized"));
 					authorizeCallback.handle(e, isAuthorized);
 				}
 			});
 		} else {
-			if(log.isDebugEnabled()) log.debug("client authorized");
+			log.debug("client authorized");
 			authorizeCallback.handle(null, true);
 		}
 	}

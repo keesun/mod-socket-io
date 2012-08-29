@@ -53,6 +53,6 @@ public class XhrPolling extends HttpPolling {
 
 		response.statusCode = 200;
 		response.write(encodedPacket);
-		if(log.isDebugEnabled()) log.debug(this.getName() + " writing " + encodedPacket);
+		log.debug(this.getName() + " writing " + encodedPacket);
 	}
 }
