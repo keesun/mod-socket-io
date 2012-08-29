@@ -25,8 +25,6 @@ You can configure everything that you can configure in the [Socket.io](https://g
 You can use this module in a simple Verticle like:
 
 ```java
-	package com.nhncorp.mods.socket.io;
-
 	import com.nhncorp.mods.socket.io.impl.Configurer;
 	import com.nhncorp.mods.socket.io.impl.DefaultSocketIOServer;
 	import org.vertx.java.core.Handler;
@@ -131,6 +129,7 @@ And, after you put the module's jar file to you module's classpath. You can code
 
 In the view, you can use the same socket.io javascript like:
 
+```javascript
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 	<script>
 		var socket = io.connect('http://localhost:9090');
@@ -139,3 +138,4 @@ In the view, you can use the same socket.io javascript like:
 			socket.emit('my other event', { my: 'data' });
 		});
 	</script>
+```
