@@ -1,6 +1,5 @@
 package com.nhncorp.mods.socket.io.impl;
 
-import org.vertx.java.core.Handler;
 import org.vertx.java.core.eventbus.EventBus;
 import org.vertx.java.core.json.JsonObject;
 
