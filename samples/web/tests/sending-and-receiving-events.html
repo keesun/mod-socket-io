@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Socket.io tests</title>
+	<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/js/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="/js/bootstrap/css/docs.css" rel="stylesheet">
+	<link href="/css/prettify.css" rel="stylesheet">
+	<style>
+			/*body {*/
+			/*padding-top: 60px;*/
+			/*}*/
+	</style>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
+			<a class="brand" href="#">Socket.io Test</a>
+			<div class="nav-collapse collapse">
+				<ul class="nav">
+					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#about">About</a></li>
+					<li><a href="#contact">Contact</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+</div>
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>Sending And Receiving Events</h1>
+		<p class="lead">Using various ways to send and receive events and messages.</p>
+	</div>
+</header>
+
+<div class="container">
+	<div id="myCarousel" class="carousel slide">
+		<div class="carousel-inner">
+			<div class="item active">
+				<div class="page-header">
+					<h1>Connect</h1>
+				</div>
+				<label>Socket.io Server URL</label>
+				<input id="urlInput" type="text" value="http://localhost:9191">
+				<span class="help-block">Please input the Socket.io server to connect.</span>
+				<button id="connectBtn" class="btn">Connect</button>
+				<span class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+					<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+var io = require('socket.io').listen(9090);
+io.sockets.on('connection', function (socket) {
+	// do something
+}
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+					<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+final SocketIOServer io = new DefaultSocketIOServer(vertx, server);
+io.sockets().onConnection(new Handler&lt;SocketIOSocket&gt;() {
+	public void handle(final SocketIOSocket socket) {
+	// do something
+	}
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+var socket = io.connect($("#urlInput").val());
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
+					<h1 id="firstTest">io.sockets.emit(name, json) <span class="label label-info">server api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the client get a message that be sent from the server by <span class="label">io.sockets.emit(name, json)</span>.</span></label>
+				<label>Result: <span class="help-inline" id="sarResult"></span></label>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+io.sockets.emit('this', { will: 'be received by everyone' });
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+io.sockets().emit("this", new JsonObject().putString("will", "be received by everyone"));
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on("this", function(msg){
+	// do something
+});
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
+					<h1 id="secondTest">socket.emit(name, json) <span class="label label-info">client api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the server get a message that be sent from the client by <span class="label">socket.emit(name, json)</span>.</span></label>
+				<label>private message:
+					<input id="msgInput" type="text" placeholder="input message">
+				</label>
+				<button id="sendBtn" class="btn">Send</button>
+				<span class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on('private message', function (msg) {
+	// do something
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.on("private message", new Handler&lt;JsonObject&gt;() {
+	public void handle(JsonObject msg) {
+		// do something
+	}
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.emit('private message', {msg:{hello:'world'});
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
+					<h1 id="thirdTest">socket.emit(name, json) <span class="label label-info">server api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the client get a message that be sent from the server by <span class="label">socket.emit(name, json)</span>.</span></label>
+				<label>message:
+					<input id="msgInput2" type="text" placeholder="input message">
+				</label>
+				<button id="sendBtn2" class="btn">Send</button>
+				<span class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on('msg', function(msg) {
+	socket.emit('msg', msg);
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.on("msg", new Handler&lt;JsonObject&gt;() {
+	public void handle(JsonObject event) {
+		socket.emit("msg", event);
+	}
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.emit('msg', {msg:'hello'});
+
+socket.on("msg", function(msg){
+	// do something
+}
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
+					<h1 id="forthTest">socket.emit(event) <span class="label label-info">server api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the client get a event that be sent from the server by <span class="label">socket.emit(event)</span>.</span></label>
+				<button id="sendBtn3" class="btn">Send</button>
+				<span class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.emit('event');
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.emit("event");
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on("event", function(){
+	// do something
+}
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
+					<h1 id="fifthTest">io.sockets().emit(event) <span class="label label-info">server api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the client get a event that be sent from the server by <span class="label">io.sockets().emit(event)</span>.</span></label>
+				<button id="sendBtn4" class="btn">Send</button>
+				<span class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+io.sockets.emit('global event');
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+io.sockets().emit("global event");
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on("global event", function(){
+	// do something
+}
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
+					<h1 id="sixthTest">socket.send(message) <span class="label label-info">client api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the server get a message that be sent from the client by <span class="label">socket.send(msg)</span>.</span></label>
+				<label>message:
+					<input id="msgInput3" type="text" placeholder="input message">
+				</label>
+				<button id="sendBtn5" class="btn">Send</button>
+				<span class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on('message', function(msg){
+	socket.send(msg);
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.on("message", new Handler&lt;JsonObject&gt;() {
+	public void handle(JsonObject event) {
+		String message = event.getString("message");
+		System.out.println(message);
+		socket.send(message);
+	}
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.send($("#msgInput3").val());
+
+socket.on("message", function(msg){
+	// do something
+}
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
+					<h1>Passed All Tests</h1>
+				</div>
+				<label>Go back to <a href="/">home</a> or restart <a href="/tests/sending-and-receiving-events.html">this test</a>.</label>
+			</div>
+		</div>
+	</div>
+</div>
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right"><a href="#">Back to top</a></p>
+		<p>For more information, come and get some, <a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a>.</p>
+		<p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<p>Icons from <a href="http://glyphicons.com">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<p>Designs from <a href="http://twitter.github.com/bootstrap">Twitter, Bootsrap</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<ul class="footer-links">
+			<li><a href="http://vertx.io">Vert.x</a></li>
+			<li><a href="http://socket.io">Socket.io</a></li>
+			<li><a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a></li>
+		</ul>
+	</div>
+</footer>
+
+<script src="/js/jquery-1.7.2.min.js"></script>
+<script src="/js/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/socket.io-0.9.10.js"></script>
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+	$(function(){
+		prettyPrint();
+
+		var $test = $('#myCarousel')
+				, socket
+				, $connectBtn = $('#connectBtn')
+				, $sendBtn = $("#sendBtn")
+				, $sendBtn2 = $("#sendBtn2")
+				, $left = $("a.carousel-control.left")
+				, $right = $("a.carousel-control.right")
+				, $sarResult = $("#sarResult")
+				, $sendBtn3 = $("#sendBtn3")
+				, $sendBtnNext = $sendBtn.next()
+				, $sendBtn2Next = $sendBtn2.next()
+				, $sendBtn3Next = $sendBtn3.next()
+				, $sendBtn4 = $("#sendBtn4")
+				, $sendBtn4Next = $sendBtn4.next()
+				, $sendBtn5 = $("#sendBtn5")
+				, $sendBtn5Next = $sendBtn5.next()
+		;
+
+		$test.carousel('pause');
+
+		next = function() {
+			$test.carousel('next');
+		}
+
+		$connectBtn.click(function(){
+			socket = io.connect($("#urlInput").val());
+			socket.on("connect", function(){
+				$right.show();
+				$connectBtn.next().append("<button class='btn btn-info' onclick='next();'>Next</button>");
+			});
+
+			socket.on("this", function(msg){
+				console.log(msg);
+				$("#firstTest").append(" <span class='label label-success'>Passed</span>");
+				$sarResult.append("<span class='label label-success'>Received</span> message is: " + msg.will);
+				$sarResult.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+
+			});
+
+			socket.on("msg", function(msg){
+				console.log(msg);
+				$("#thirdTest").append(" <span class='label label-success'>Passed</span>");
+				$sendBtn2Next.append(" <span class='label label-success'>Received</span> message is: " + msg.msg);
+				$sendBtn2Next.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			});
+
+			socket.on("event", function(){
+				$("#forthTest").append(" <span class='label label-success'>Passed</span>");
+				$sendBtn3Next.append(" <span class='label label-success'>Received</span>");
+				$sendBtn3Next.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			});
+
+			socket.on("global event", function(){
+				$("#fifthTest").append(" <span class='label label-success'>Passed</span>");
+				$sendBtn4Next.append(" <span class='label label-success'>Received</span>");
+				$sendBtn4Next.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			});
+
+			socket.on("message", function(msg){
+				$("#sixthTest").append(" <span class='label label-success'>Passed</span>");
+				$sendBtn5Next.append(" <span class='label label-success'>Received</span> " + msg);
+				$sendBtn5Next.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			});
+
+		});
+
+		$sendBtn.click(function(){
+			var msg = $("#msgInput").val();
+			socket.emit('private message', {msg:msg});
+			$sendBtnNext.empty();
+			$sendBtnNext.append("<span class='label label-success'>Sent</span> Check out the sever's log.");
+			$("#secondTest").append(" <span class='label label-success'>Passed</span>");
+			$sendBtnNext.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+
+		});
+
+		$sendBtn2.click(function(){
+			var msg = $("#msgInput2").val();
+			socket.emit('msg', {msg:msg});
+			$sendBtn2Next.empty();
+			$sendBtn2Next.append("<span class='label label-success'>Sent</span>");
+		});
+
+		$sendBtn3.click(function(){
+			socket.emit('event');
+			$sendBtn3Next.empty();
+			$sendBtn3Next.append("<span class='label label-success'>Sent</span>");
+		});
+
+		$sendBtn4.click(function(){
+			socket.emit('global event');
+			$sendBtn4Next.empty();
+			$sendBtn4Next.append("<span class='label label-success'>Sent</span>");
+		});
+
+		$sendBtn5.click(function(){
+			socket.send($("#msgInput3").val());
+			$sendBtn5Next.empty();
+			$sendBtn5Next.append("<span class='label label-success'>Sent</span>");
+		});
+	});
+</script>
+</body>
+</html>
