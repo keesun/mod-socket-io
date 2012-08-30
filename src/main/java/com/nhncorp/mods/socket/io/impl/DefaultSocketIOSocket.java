@@ -4,6 +4,7 @@ import com.nhncorp.mods.socket.io.SocketIOSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
+import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.impl.VertxInternal;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
@@ -29,11 +30,12 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	private VertxInternal vertx;
 	private Handler<SocketIOSocket> socketHandler;
 	private Map<String, Handler<JsonArray>> acks;
-	private Map<String, Handler<JsonObject>> handlers;
 	private boolean disconnected;
+	private Store store;
 
 	public DefaultSocketIOSocket(Manager manager, String id, Namespace namespace, boolean readable, Handler<SocketIOSocket> socketHandler) {
 		this.manager = manager;
+		this.store = manager.getStore();
 		this.vertx = manager.getVertx();
 		this.id = id;
 		this.namespace = namespace;
@@ -41,13 +43,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 		this.parser = new Parser();
 		this.socketHandler = socketHandler;
 		this.acks = new ConcurrentHashMap<>();
-		this.handlers = new ConcurrentHashMap<>();
 		setupFlags();
-
-		// 기본 에러 핸들러 처리 필요함
-
-		// socket에 저장되어도 되는 데이터: handshake data, transport, log ?
-		// 추가가 필요한 기능, set, get, join, leave
 	}
 
 	/**
@@ -95,7 +91,10 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 
 	@Override
 	public void emit(String event) {
-		emit(event, null);
+		JsonObject packet = new JsonObject();
+		packet.putString("type", "event");
+		packet.putString("name", event);
+		packet(packet);
 	}
 
 	@Override
@@ -104,6 +103,52 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 		packat.putString("type", "message");
 		packat.putString("data", message);
 		packet(packat);
+	}
+
+	/**
+	 * Stores data for the client.
+	 *
+	 * @see "Socket.prototype.set"
+	 * @param key
+	 * @param value
+	 * @param handler
+	 */
+	@Override
+	public void set(String key, JsonObject value, final Handler<JsonObject> handler) {
+		String prefix = "socket:set:";
+		vertx.eventBus().registerHandler(prefix + key, new Handler<Message<JsonObject>>() {
+			public void handle(Message<JsonObject> event) {
+				handler.handle(event.body);
+			}
+		});
+		this.store.set(key, value, prefix, vertx.eventBus());
+	}
+
+	/**
+	 * Retrieves data for the client
+	 *
+	 * @see "Socket.prototype.get"
+	 * @param key
+	 * @param handler
+	 */
+	@Override
+	public void get(String key, final Handler<JsonObject> handler) {
+		String prefix = "socket:get:";
+		vertx.eventBus().registerHandler(prefix +key, new Handler<Message<JsonObject>>() {
+			public void handle(Message<JsonObject> event) {
+				handler.handle(event.body);
+			}
+		});
+		this.store.get(key, prefix, vertx.eventBus());
+	}
+
+	@Override
+	public void emit(String event, String data) {
+		JsonObject packet = new JsonObject();
+		packet.putString("type", "event");
+		packet.putString("name", event);
+		packet.putArray("args", new JsonArray().addString(data));
+		packet(packet);
 	}
 
 	/**
@@ -237,8 +282,12 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 * @param event
 	 * @param handler
 	 */
-	public synchronized void on(String event, Handler<JsonObject> handler) {
-		handlers.put(event, handler);
+	public synchronized void on(String event, final Handler<JsonObject> handler) {
+		vertx.eventBus().registerHandler(event, new Handler<Message<JsonObject>>() {
+			public void handle(Message<JsonObject> event) {
+				handler.handle(event.body);
+			}
+		});
 	}
 
 	/**
@@ -253,20 +302,16 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	// $emit
 	public synchronized void emit(JsonObject params) {
 		String name = params.getString("name", "message");
-		Handler<JsonObject> handler = handlers.get(name);
-		if(handler != null) {
-			JsonObject packet = flatten(params.getArray("args"));
-			if(name.equals("disconnect")) {
-				packet.putString("reason", params.getString("reason"));
-			}
-			String message = params.getString("message");
-			if(message != null) {
-				packet.putString("message", message);
-			}
-			handler.handle(packet);
-		} else {
-			log.info("handler not found for \'" + name + "\'");
+		JsonObject packet = flatten(params.getArray("args"));
+		if(name.equals("disconnect")) {
+			packet.putString("reason", params.getString("reason"));
 		}
+		String message = params.getString("message");
+		if(message != null) {
+			packet.putString("message", message);
+		}
+
+		vertx.eventBus().send(name, packet);
 	}
 
 	private JsonObject flatten(JsonArray jsonArray) {
@@ -281,6 +326,8 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 			Object o = iterator.next();
 			if(o instanceof JsonObject) {
 				result.mergeIn((JsonObject)o);
+			} else if(o instanceof String) {
+				result.putString("data", (String)o);
 			}
 		}
 

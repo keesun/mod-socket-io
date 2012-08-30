@@ -82,7 +82,6 @@ public class Parser {
 				break;
 
 			case "json":
-//				data = JsonUtils.stringify(packet.getString("data"));
 				data = Json.encode(packet.getString("data"));
 				break;
 
@@ -90,7 +89,6 @@ public class Parser {
 				data = packet.getString("ackId");
 				args = packet.getArray("args");
 				if(args != null && args.size() > 0) {
-//					data += "+" + JsonUtils.stringify(args.toString());
 					data += "+" + Json.encode(args.toString());
 				}
 				break;

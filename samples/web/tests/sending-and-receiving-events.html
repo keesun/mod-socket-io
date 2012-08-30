@@ -25,7 +25,7 @@
 			<a class="brand" href="#">Socket.io Test</a>
 			<div class="nav-collapse collapse">
 				<ul class="nav">
-					<li class="active"><a href="#">Home</a></li>
+					<li class="active"><a href="/">Home</a></li>
 					<li><a href="#about">About</a></li>
 					<li><a href="#contact">Contact</a></li>
 				</ul>
@@ -385,8 +385,6 @@ socket.on("message", function(msg){
 				, $connectBtn = $('#connectBtn')
 				, $sendBtn = $("#sendBtn")
 				, $sendBtn2 = $("#sendBtn2")
-				, $left = $("a.carousel-control.left")
-				, $right = $("a.carousel-control.right")
 				, $sarResult = $("#sarResult")
 				, $sendBtn3 = $("#sendBtn3")
 				, $sendBtnNext = $sendBtn.next()
@@ -407,7 +405,6 @@ socket.on("message", function(msg){
 		$connectBtn.click(function(){
 			socket = io.connect($("#urlInput").val());
 			socket.on("connect", function(){
-				$right.show();
 				$connectBtn.next().append("<button class='btn btn-info' onclick='next();'>Next</button>");
 			});
 
