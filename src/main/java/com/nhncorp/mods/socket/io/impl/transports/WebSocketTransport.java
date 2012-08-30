@@ -3,6 +3,8 @@ package com.nhncorp.mods.socket.io.impl.transports;
 import com.nhncorp.mods.socket.io.impl.ClientData;
 import com.nhncorp.mods.socket.io.impl.Manager;
 import com.nhncorp.mods.socket.io.impl.Transport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.WebSocket;
@@ -13,6 +15,8 @@ import java.util.List;
  * @author Keesun Baik
  */
 public class WebSocketTransport extends Transport {
+
+	private static final Logger log = LoggerFactory.getLogger(WebSocketTransport.class);
 
 	private WebSocket webSocket;
 
@@ -57,6 +61,7 @@ public class WebSocketTransport extends Transport {
 
 	@Override
 	public void write(String encodedPacket) {
+		log.debug(getName() + " writing " + encodedPacket);
 		webSocket.writeTextFrame(encodedPacket);
 	}
 
