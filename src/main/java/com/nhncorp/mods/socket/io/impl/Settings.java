@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Settings {
 
-	private String origins = "*.*";
+	private String origins = "*:*";
 	private boolean log = true;
 	private Store store = new MemoryStore();
 //	private Logger logger;

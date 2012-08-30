@@ -244,9 +244,6 @@ public class Namespace implements Shareable {
 		}
 
 		String type = packet.getString("type");
-		if (type.equals("connect"))
-			;
-
 		switch (type) {
 			case "connect":
 				String endpoint = packet.getString("endpoint", "");
@@ -293,7 +290,9 @@ public class Namespace implements Shareable {
 					log.debug("ignoring blacklisted event \'" + packet.getString("name") + "\'");
 				} else {
 					JsonObject params = new JsonObject();
-					params.putArray("args", packet.getArray("args"));
+					JsonArray args = packet.getArray("args");
+					if(args != null)
+						params.putArray("args", args);
 					params.putString("name", packet.getString("name"));
 					if (isDataAck) {
 						params.putString("ack", packet.getString("ack"));
@@ -309,6 +308,7 @@ public class Namespace implements Shareable {
 			case "json":
 			case "message":
 				JsonObject params = new JsonObject();
+				params.putString("name", "message");
 				params.putString("message", packet.getString("data"));
 				if (isDataAck) {
 					params.putString("ack", ack);
@@ -364,5 +364,12 @@ public class Namespace implements Shareable {
 
 	public String getName() {
 		return name;
+	}
+
+	public void emit(String event) {
+		JsonObject packet = new JsonObject();
+		packet.putString("type", "event");
+		packet.putString("name", event);
+		packet(packet);
 	}
 }

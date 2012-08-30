@@ -128,16 +128,17 @@ public class HandshakeHandler {
 			origin = "*";
 		}
 
-		if(origins.indexOf("*.*") != -1) {
+		if(origins.indexOf("*:*") != -1) {
 			return true;
 		}
 
 		String hostname = origin.split("://")[1];
 		String port = null;
-		int semicolon = origin.indexOf(":");
-		if(semicolon != -1) {
-			hostname = hostname.substring(0, semicolon);
-			port = hostname.substring(semicolon + 1);
+		int semicolonIndex = origin.indexOf(":");
+		if(semicolonIndex != -1) {
+			String[] parts = hostname.split(":");
+			hostname = parts[0];
+			port = parts[1];
 		}
 
 		if(origins.indexOf(hostname + ":" + port) != -1) return true;

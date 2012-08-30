@@ -192,7 +192,10 @@ public class Parser {
 			case "event":
 				JsonObject parsedData = new JsonObject(data.toString());
 				packet.putString("name", parsedData.getString("name"));
-				packet.putArray("args", parsedData.getArray("args"));
+				JsonArray args = parsedData.getArray("args");
+				if(args != null) {
+					packet.putArray("args", args);
+				}
 				break;
 			case "json":
 				packet.putObject("data", new JsonObject(data));
@@ -206,21 +209,18 @@ public class Parser {
 				if(piecedData[0] != null) {
 					packet.putString("ackId", pieces[1]);
 					packet.putArray("args", new JsonArray());
-
 					if(piecedData[3] != null) {
-						JsonArray args = new JsonArray();
-						if(piecedData[3] != null) {
-							args.add(new JsonObject(piecedData[3]));
-						}
-						packet.putArray("args", args);
+						JsonArray ackArgs = new JsonArray();
+						ackArgs.add(new JsonObject(piecedData[3]));
+						packet.putArray("args", ackArgs);
 					}
 				}
 				break;
 			case "error":
-				String[] splitedData = data.split("\\+");
-				String reason = reasonsList[Integer.parseInt(splitedData[0])];
+				String[] parts = data.split("\\+");
+				String reason = reasonsList[Integer.parseInt(parts[0])];
 				if(reason != null) packet.putString("reason", reason);
-				String advice = adviceList[Integer.parseInt(splitedData[1])];
+				String advice = adviceList[Integer.parseInt(parts[1])];
 				if(advice != null) packet.putString("advice", advice);
 		}
 

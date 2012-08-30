@@ -93,6 +93,19 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 		this.on("disconnect", handler);
 	}
 
+	@Override
+	public void emit(String event) {
+		emit(event, null);
+	}
+
+	@Override
+	public void send(String message) {
+		JsonObject packat = new JsonObject();
+		packat.putString("type", "message");
+		packat.putString("data", message);
+		packet(packat);
+	}
+
 	/**
 	 * Transmits a packet.
 	 *
@@ -155,10 +168,11 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 //			this.acks[packet.id] = lastArg;
 //			args = args.slice(0, args.length - 1);
 //		}
-
-		JsonArray args = new JsonArray();
-		args.addObject(jsonObject);
-		packet.putArray("args", args);
+		if(jsonObject != null) {
+			JsonArray args = new JsonArray();
+			args.addObject(jsonObject);
+			packet.putArray("args", args);
+		}
 		this.packet(packet);
 	}
 
@@ -238,12 +252,16 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 
 	// $emit
 	public synchronized void emit(JsonObject params) {
-		String name = params.getString("name");
+		String name = params.getString("name", "message");
 		Handler<JsonObject> handler = handlers.get(name);
 		if(handler != null) {
 			JsonObject packet = flatten(params.getArray("args"));
 			if(name.equals("disconnect")) {
 				packet.putString("reason", params.getString("reason"));
+			}
+			String message = params.getString("message");
+			if(message != null) {
+				packet.putString("message", message);
 			}
 			handler.handle(packet);
 		} else {
