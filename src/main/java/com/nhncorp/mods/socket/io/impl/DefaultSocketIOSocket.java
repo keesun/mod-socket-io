@@ -114,14 +114,16 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 * @param handler
 	 */
 	@Override
-	public void set(String key, JsonObject value, final Handler<JsonObject> handler) {
-		String prefix = "socket:set:";
-		vertx.eventBus().registerHandler(prefix + key, new Handler<Message<JsonObject>>() {
-			public void handle(Message<JsonObject> event) {
-				handler.handle(event.body);
-			}
-		});
-		this.store.set(key, value, prefix, vertx.eventBus());
+	public void set(String key, JsonObject value, final Handler<Void> handler) {
+//		String prefix = id + ":set:";
+//		vertx.eventBus().registerHandler(prefix + key, new Handler<Message>() {
+//			public void handle(Message event) {
+//				handler.handle(null);
+//			}
+//		});
+//		this.store.set(key, value, prefix, vertx.eventBus());
+
+		this.store.set(key, value, handler);
 	}
 
 	/**
@@ -133,13 +135,42 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 */
 	@Override
 	public void get(String key, final Handler<JsonObject> handler) {
-		String prefix = "socket:get:";
-		vertx.eventBus().registerHandler(prefix +key, new Handler<Message<JsonObject>>() {
-			public void handle(Message<JsonObject> event) {
-				handler.handle(event.body);
-			}
-		});
-		this.store.get(key, prefix, vertx.eventBus());
+//		String prefix = id + ":get:";
+//		vertx.eventBus().registerHandler(prefix + key, new Handler<Message<JsonObject>>() {
+//			public void handle(Message<JsonObject> event) {
+//				handler.handle(event.body);
+//			}
+//		});
+//		this.store.get(key, prefix, vertx.eventBus());
+
+		this.store.get(key, handler);
+	}
+
+	@Override
+	public void has(String key, final Handler<Boolean> handler) {
+		this.store.has(key, handler);
+
+//		String prefix = id + ":has:";
+//		vertx.eventBus().registerHandler(prefix + key, new Handler<Message<Boolean>>() {
+//			public void handle(Message<Boolean> event) {
+//				handler.handle(event.body);
+//			}
+//		});
+//		this.store.has(key, prefix, vertx.eventBus());
+	}
+
+	@Override
+	public void del(String key, final Handler<Void> handler) {
+		this.store.del(key, handler);
+
+
+//		String prefix = id + ":del:";
+//		vertx.eventBus().registerHandler(prefix + key, new Handler<Message>() {
+//			public void handle(Message event) {
+//				handler.handle(null);
+//			}
+//		});
+//		this.store.del(key, prefix, vertx.eventBus());
 	}
 
 	@Override
@@ -283,7 +314,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 * @param handler
 	 */
 	public synchronized void on(String event, final Handler<JsonObject> handler) {
-		vertx.eventBus().registerHandler(event, new Handler<Message<JsonObject>>() {
+		vertx.eventBus().registerHandler(id + ":" + event, new Handler<Message<JsonObject>>() {
 			public void handle(Message<JsonObject> event) {
 				handler.handle(event.body);
 			}
@@ -311,7 +342,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 			packet.putString("message", message);
 		}
 
-		vertx.eventBus().send(name, packet);
+		vertx.eventBus().send(id + ":" + name, packet);
 	}
 
 	private JsonObject flatten(JsonArray jsonArray) {

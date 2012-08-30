@@ -27,8 +27,8 @@ public class StoringDataAssociatedToClient extends Verticle {
 				socket.on("set nickname", new Handler<JsonObject>() {
 					public void handle(JsonObject name) {
 						System.out.println("name: " + name);
-						socket.set("nickname", name, new Handler<JsonObject>() {
-							public void handle(JsonObject event) {
+						socket.set("nickname", name, new Handler<Void>() {
+							public void handle(Void event) {
 								System.out.println("set name");
 								socket.emit("ready");
 							}

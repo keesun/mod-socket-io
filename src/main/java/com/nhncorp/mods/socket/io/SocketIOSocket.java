@@ -55,9 +55,13 @@ public interface SocketIOSocket extends Shareable {
 
 	void send(String message);
 
-	void set(String key, JsonObject value, Handler<JsonObject> handler);
+	void set(String key, JsonObject value, Handler<Void> handler);
 
 	void get(String key, Handler<JsonObject> handler);
+
+	void has(String key, Handler<Boolean> handler);
+
+	void del(String key, Handler<Void> handler);
 
 	void emit(String event, String data);
 }
