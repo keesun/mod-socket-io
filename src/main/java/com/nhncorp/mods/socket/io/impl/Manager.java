@@ -34,8 +34,9 @@ public class Manager {
 	public static final String DEFAULT_NSP = "";
 
 	private Settings settings;
-	private Handler<SocketIOSocket> socketHandler;
+//	private Handler<SocketIOSocket> socketHandler;
 	private AuthorizationHandler globalAuthorizationHandler;
+
 	private Map<String, HandshakeData> handshaken;
 	private Map<String, Transport> transports;
 	private Map<String, List<Buffer>> closed;
@@ -44,6 +45,7 @@ public class Manager {
 	private Map<String, Namespace> namespaces;
 	private Map<String, Room> rooms;
 	private Map<String, RoomClient> roomClients;
+
 	private Namespace sockets;
 	private VertxInternal vertx;
 	private HttpServer httpServer;
@@ -301,7 +303,7 @@ public class Manager {
 	public void onClientMessage(String sessionId, JsonObject packet) {
 		Namespace namespace = namespaces.get(packet.getString("endpoint"));
 		if (namespace != null) {
-			namespace.handlePacket(sessionId, packet, socketHandler);
+			namespace.handlePacket(sessionId, packet);
 		}
 	}
 
@@ -490,13 +492,13 @@ public class Manager {
 		this.settings = settings;
 	}
 
-	public Handler<SocketIOSocket> getSocketHandler() {
-		return socketHandler;
-	}
-
-	public void setSocketHandler(Handler<SocketIOSocket> socketHandler) {
-		this.socketHandler = socketHandler;
-	}
+//	public Handler<SocketIOSocket> getSocketHandler() {
+//		return socketHandler;
+//	}
+//
+//	public void setSocketHandler(Handler<SocketIOSocket> socketHandler) {
+//		this.socketHandler = socketHandler;
+//	}
 
 	public VertxInternal getVertx() {
 		return vertx;

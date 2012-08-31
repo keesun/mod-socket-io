@@ -28,6 +28,7 @@ public class Namespace implements Shareable {
 	private JsonObject flags;
 	private Parser parser;
 	private AuthorizationHandler authHandler;
+	private Handler<SocketIOSocket> socketHandler;
 
 	public Namespace(final Manager manager, final String name) {
 		this.manager = manager;
@@ -40,7 +41,7 @@ public class Namespace implements Shareable {
 	}
 
 	public Namespace onConnection(Handler<SocketIOSocket> handler) {
-		this.manager.setSocketHandler(handler);
+		this.socketHandler = handler;
 		return this;
 	}
 
@@ -167,12 +168,11 @@ public class Namespace implements Shareable {
 	 * @see "SocketNamespace.prototype.socket"
 	 * @param sid
 	 * @param readable whether the socket will be readable when initialized
-	 * @param socketHandler
 	 * @return
 	 */
-	public SocketIOSocket socket(String sid, boolean readable, Handler<SocketIOSocket> socketHandler) {
+	public SocketIOSocket socket(String sid, boolean readable) {
 		if (!this.sockets.containsKey(sid)) {
-			this.sockets.put(sid, new DefaultSocketIOSocket(this.manager, sid, this, readable, socketHandler));
+			this.sockets.put(sid, new DefaultSocketIOSocket(this.manager, sid, this, readable, this.socketHandler));
 		}
 		return this.sockets.get(sid);
 	}
@@ -233,10 +233,9 @@ public class Namespace implements Shareable {
 	 * @see "SocketNamespace.prototype.handlePacket"
 	 * @param sessionId
 	 * @param packet
-	 * @param socketHandler
 	 */
-	public void handlePacket(final String sessionId, JsonObject packet, Handler<SocketIOSocket> socketHandler) {
-		final SocketIOSocket socket = socket(sessionId, true, socketHandler);
+	public void handlePacket(final String sessionId, JsonObject packet) {
+		final SocketIOSocket socket = socket(sessionId, true);
 		boolean isDataAck = false;
 		String ack = packet.getString("ack");
 		if (ack != null && ack.equals("data")) {

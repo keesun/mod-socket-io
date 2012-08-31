@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Socket.io tests</title>
+	<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/js/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="/js/bootstrap/css/docs.css" rel="stylesheet">
+	<link href="/css/prettify.css" rel="stylesheet">
+	<style>
+			/*body {*/
+			/*padding-top: 60px;*/
+			/*}*/
+	</style>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
+			<a class="brand" href="#">Socket.io Test</a>
+			<div class="nav-collapse collapse">
+				<ul class="nav">
+					<li class="active"><a href="/">Home</a></li>
+					<li><a href="#about">About</a></li>
+					<li><a href="#contact">Contact</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+</div>
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>Restricting yourself to a namespace</h1>
+		<p class="lead">Provides a way of namespacing a socket.</p>
+	</div>
+</header>
+
+<div class="container">
+<div id="myCarousel" class="carousel slide">
+<div class="carousel-inner">
+<div class="item active">
+	<div class="page-header">
+		<h1 id="chatConnectTitle">Connect to '/chat' namespace</h1>
+	</div>
+	<label>Socket.io Server URL</label>
+	<input id="urlInput" type="text" value="http://localhost:9191">
+	<span class="help-block">Please input the Socket.io server to connect.</span>
+	<button id="chatConnectBtn" class="btn">Connect</button>
+	<span class="help-inline"></span>
+	<hr class="soften">
+	<div class="page-header">
+		<h1>Codes</h1>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+var chat = io
+		.of('/chat')
+		.on('connection', function (socket) {
+			// do something
+		});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+final Namespace chat = io.of("/chat");
+chat.onConnection(new Handler&lt;SocketIOSocket&gt;() {
+	public void handle(SocketIOSocket socket) {
+		// do something
+	}
+});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+var chat = io.connect('http://localhost/chat');
+
+chat.on('connect', function () {
+	// do something
+});
+</pre>
+		</div>
+	</div>
+</div>
+<div class="item">
+	<div class="page-header">
+		<h1 id="newsConnectTitle">Connect to '/news' namespace</h1>
+	</div>
+	<button id="newsConnectBtn" class="btn">Connect</button>
+	<span class="help-inline"></span>
+	<hr class="soften">
+	<div class="page-header">
+		<h1>Codes</h1>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+var news = io
+	.of('/news')
+	.on('connection', function (socket) {
+		// do something
+	});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+final Namespace news = io.of("/news");
+news.onConnection(new Handler&lt;SocketIOSocket&gt;() {
+	public void handle(SocketIOSocket socket) {
+		// do something
+	}
+});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+var news = io.connect('http://localhost/news');
+
+news.on('news', function () {
+	// do something
+});
+</pre>
+		</div>
+	</div>
+</div>
+<div class="item">
+	<div class="page-header">
+		<h1 id="chatEmitTest">chat.emit(event, msg) <span class="label label-info">server api</span></h1>
+	</div>
+	<label>Test: <span class="help-inline">Check if the server can send an event to a namespace by <span class="label">chat.emit(event, msg)</span>.</span></label>
+	<button id="chatEmitBtn" class="btn">Send</button>
+	<span class="help-inline"></span>
+	<hr class="soften">
+	<div class="page-header">
+		<h1>Codes</h1>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+chat.emit('msg', { everyone: 'in', '/chat': 'will get' });
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+chat.emit("msg", new JsonObject().putString("everyone", "in").putString("/chat", "will get"));
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+news.on('connect', function(){
+	// do something
+});
+</pre>
+		</div>
+	</div>
+</div>
+<div class="item">
+	<div class="page-header">
+		<h1>Passed All Tests</h1>
+	</div>
+	<label>Go back to <a href="/">home</a> or restart <a href="/tests/restricting-yourself-to-a-namespace.html">this test</a>.</label>
+</div>
+</div>
+</div>
+</div>
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right"><a href="#">Back to top</a></p>
+		<p>For more information, come and get some, <a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a>.</p>
+		<p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<p>Icons from <a href="http://glyphicons.com">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<p>Designs from <a href="http://twitter.github.com/bootstrap">Twitter, Bootsrap</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<ul class="footer-links">
+			<li><a href="http://vertx.io">Vert.x</a></li>
+			<li><a href="http://socket.io">Socket.io</a></li>
+			<li><a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a></li>
+		</ul>
+	</div>
+</footer>
+
+<script src="/js/jquery-1.7.2.min.js"></script>
+<script src="/js/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/socket.io-0.9.10.js"></script>
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+	$(function(){
+		prettyPrint();
+
+		var $test = $('#myCarousel')
+				, socketIOServerUrl = $("#urlInput").val()
+				, chat
+				, news
+				, $chatConnectBtn = $('#chatConnectBtn')
+				, $chatConnectBtnNext = $chatConnectBtn.next()
+				, $newsConnectBtn = $('#newsConnectBtn')
+				, $newsConnectBtnNext = $newsConnectBtn.next()
+				, $chatEmitBtn = $("#chatEmitBtn")
+				, $chatEmitBtnNext = $chatEmitBtn.next()
+			;
+
+		$test.carousel('pause');
+
+		next = function() {
+			$test.carousel('next');
+		}
+
+		function sent($element) {
+			$element.empty();
+			$element.append("<span class='label label-success'>Sent</span>");
+		}
+
+		function got($element, $title) {
+			$element.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			$title.append(" <span class='label label-success'>Passed</span>");
+		}
+
+		$chatConnectBtn.click(function(){
+			chat = io.connect(socketIOServerUrl + "/chat");
+			sent($chatConnectBtnNext);
+
+			chat.on('connect', function(){
+				got($chatConnectBtnNext, $("#chatConnectTitle"));
+			});
+
+			chat.on('msg', function(msg){
+				console.log(msg);
+				$chatEmitBtnNext.append(" got: " + JSON.stringify(msg));
+				got($chatEmitBtnNext, $("#chatEmitTest"));
+
+			})
+		});
+
+		$newsConnectBtn.click(function(){
+			news = io.connect(socketIOServerUrl + "/news");
+			sent($newsConnectBtnNext);
+
+			news.on('connect', function(){
+				got($newsConnectBtnNext, $("#newsConnectTitle"));
+			});
+		});
+
+		$chatEmitBtn.click(function(){
+			chat.emit("namespace emit");
+			sent($chatConnectBtnNext);
+		});
+	});
+</script>
+</body>
+</html>

@@ -100,14 +100,14 @@ public class HttpRequestHandler {
 //			this.store.publish('handshake', data.id, handshaken);
 
 			// initialize the socket for all namespaces
-			Handler<SocketIOSocket> socketHandler = manager.getSocketHandler();
+//			Handler<SocketIOSocket> socketHandler = manager.getSocketHandler();
 			for(Namespace namespace : manager.getNamespaceValues()) {
-				SocketIOSocket socket = namespace.socket(sessionId, true, socketHandler);
+				SocketIOSocket socket = namespace.socket(sessionId, true);
 				// echo back connect packet and fire connection event
 				if (namespace.getName().equals(Manager.DEFAULT_NSP)) {
 					JsonObject jsonObject = new JsonObject();
 					jsonObject.putString("type", "connect");
-					namespace.handlePacket(sessionId, jsonObject, socketHandler);
+					namespace.handlePacket(sessionId, jsonObject);
 				}
 			}
 //			this.store.subscribe('message:' + data.id, function (packet) {
