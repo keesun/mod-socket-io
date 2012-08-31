@@ -12,6 +12,9 @@ import org.vertx.java.deploy.Verticle;
  */
 public class StoringDataAssociatedToClient extends Verticle {
 
+	public StoringDataAssociatedToClient() {
+	}
+
 	public StoringDataAssociatedToClient(Vertx vertx) {
 		this.vertx = vertx;
 	}
@@ -42,6 +45,39 @@ public class StoringDataAssociatedToClient extends Verticle {
 							public void handle(JsonObject data) {
 								System.out.println("Chat message by " + data);
 								socket.emit("get", data.getString("data"));
+							}
+						});
+					}
+				});
+
+				socket.on("has nickname", new Handler<JsonObject>() {
+					public void handle(JsonObject event) {
+						socket.has("nickname", new Handler<Boolean>() {
+							public void handle(Boolean has) {
+								System.out.println("has nickname? " + has);
+								socket.emit("has", has.toString());
+							}
+						});
+					}
+				});
+
+				socket.on("del nickname", new Handler<JsonObject>() {
+					public void handle(JsonObject event) {
+						socket.del("nickname", new Handler<Void>() {
+							public void handle(Void event) {
+								System.out.println("del nickname");
+								socket.emit("del");
+							}
+						});
+					}
+				});
+
+				socket.on("confirm nickname", new Handler<JsonObject>() {
+					public void handle(JsonObject event) {
+						socket.has("nickname", new Handler<Boolean>() {
+							public void handle(Boolean event) {
+								System.out.println("has nickname? " + event);
+								socket.emit("confirm", event.toString());
 							}
 						});
 					}

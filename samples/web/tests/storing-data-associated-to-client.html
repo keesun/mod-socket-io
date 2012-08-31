@@ -182,9 +182,95 @@ socket.emit('get nickname');
 			</div>
 			<div class="item">
 				<div class="page-header">
+					<h1 id="thirdTest">socket.has(key, fn) <span class="label label-info">server api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the server has a key/value related with the client by <span class="label">socket.has(key, fn)</span>.</span></label>
+				<button id="hasBtn" class="btn">Has?</button>
+				<span class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.has('nickname', function (err, name) {
+	// do something
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.has("nickname", new Handler&lt;Boolean&gt;(){
+	public void handle(Boolean has) {
+		// do something
+	}
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.emit('has nickname');
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
+					<h1 id="forthTest">socket.del(key, fn) <span class="label label-info">server api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the server can delete a key/value related with the client by <span class="label">socket.has(key, fn)</span>.</span></label>
+				<button id="delBtn" class="btn">Delete</button>
+				<span class="help-inline"></span>
+				<button id="confirmBtn" class="btn">Has?</button>
+				<span class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.del('nickname', function (err, name) {
+	// do something
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.del("nickname", new Handler&lt;Void&gt;(){
+	public void handle(Void void) {
+		// do something
+	}
+});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.emit('del nickname');
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
 					<h1>Passed All Tests</h1>
 				</div>
-				<label>Go back to <a href="/">home</a> or restart <a href="/tests/sending-and-receiving-events.html">this test</a>.</label>
+				<label>Go back to <a href="/">home</a> or restart <a href="/tests/storing-data-associated-to-client.html">this test</a>.</label>
 			</div>
 		</div>
 	</div>
@@ -220,12 +306,28 @@ socket.emit('get nickname');
 				, $sendBtnNext = $sendBtn.next()
 				, $getBtn = $('#getBtn')
 				, $getBtnNext = $getBtn.next()
+				, $hasBtn = $('#hasBtn')
+				, $hasBtnNext = $hasBtn.next()
+				, $delBtn = $('#delBtn')
+				, $delBtnNext = $delBtn.next()
+				, $confirmBtn = $("#confirmBtn")
+				, $confirmBtnNext = $confirmBtn.next()
 		;
 
 		$test.carousel('pause');
 
 		next = function() {
 			$test.carousel('next');
+		}
+
+		function sent($element) {
+			$element.empty();
+			$element.append("<span class='label label-success'>Sent</span>");
+		}
+
+		function got($element, $title) {
+			$element.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			$title.append(" <span class='label label-success'>Passed</span>");
 		}
 
 		$connectBtn.click(function(){
@@ -235,28 +337,50 @@ socket.emit('get nickname');
 			});
 
 			socket.on("ready", function(){
-				$sendBtnNext.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
-				$("#firstTest").append(" <span class='label label-success'>Passed</span>");
+				got($sendBtnNext, $("#firstTest"));
 			});
 
 			socket.on("get", function(data){
 				$getBtnNext.append(" " + data);
-				$getBtnNext.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
-				$("#secondTest").append(" <span class='label label-success'>Passed</span>");
+				got($getBtnNext, $("#secondTest"));
 			});
+
+			socket.on("has", function(has){
+				$hasBtnNext.append(" " + has);
+				got($hasBtnNext, $("#thirdTest"));
+			});
+
+			socket.on("confirm", function(has){
+				$confirmBtnNext.append(" " + has);
+				got($confirmBtnNext, $("#forthTest"));
+			})
 		});
 
 		$sendBtn.click(function(){
 			var name = $("#nameInput").val();
 			socket.emit('set nickname', name);
-			$sendBtnNext.empty();
-			$sendBtnNext.append("<span class='label label-success'>Sent</span> Check out the sever's log.");
+			sent($sendBtnNext);
+			$sendBtnNext.append(" Check out the sever's log.");
 		});
 
 		$getBtn.click(function(){
 			socket.emit('get nickname');
-			$getBtnNext.empty();
-			$getBtnNext.append("<span class='label label-success'>Sent</span>");
+			sent($getBtnNext);
+		});
+
+		$hasBtn.click(function(){
+			socket.emit('has nickname');
+			sent($hasBtnNext);
+		});
+
+		$delBtn.click(function(){
+			socket.emit('del nickname');
+			sent($delBtnNext);
+		});
+
+		$confirmBtn.click(function(){
+			socket.emit("confirm nickname");
+			sent($confirmBtnNext);
 		});
 	});
 </script>

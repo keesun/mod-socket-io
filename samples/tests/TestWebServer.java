@@ -11,6 +11,9 @@ public class TestWebServer extends Verticle {
 
 	private static final String WEB_ROOT = "samples/web";
 
+	public TestWebServer() {
+	}
+
 	public TestWebServer(Vertx vertx) {
 		this.vertx = vertx;
 	}

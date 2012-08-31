@@ -15,4 +15,25 @@ io.sockets.on('connection', function (socket) {
 			socket.emit('get', name);
 		});
 	});
+
+	socket.on('has nickname', function() {
+		socket.has('nickname', function (err, has) {
+			console.log('has nickname? ' + has);
+			socket.emit('has', has);
+		});
+	})
+
+	socket.on('del nickname', function(){
+		socket.del('nickname', function(err){
+			console.log('del nickname');
+			socket.emit('del');
+		});
+	});
+
+	socket.on('confirm nickname', function(){
+		socket.has('nickname', function(err, has){
+			console.log('confirm nickname');
+			socket.emit('confirm', has);
+		})
+	});
 });

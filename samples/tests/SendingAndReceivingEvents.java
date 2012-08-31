@@ -14,6 +14,9 @@ import org.vertx.java.deploy.Verticle;
  */
 public class SendingAndReceivingEvents extends Verticle {
 
+	public SendingAndReceivingEvents() {
+	}
+
 	public SendingAndReceivingEvents(Vertx vertx) {
 		this.vertx = vertx;
 	}
