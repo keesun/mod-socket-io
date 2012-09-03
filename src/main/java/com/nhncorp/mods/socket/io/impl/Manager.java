@@ -244,6 +244,10 @@ public class Manager {
 	 * @param exceptions
 	 */
 	public void onDispatch(String room, String encodedPacket, boolean isVolatile, JsonArray exceptions) {
+		if(room.equals("/")) {
+			room = "";
+		}
+
 		Room thisRoom = this.rooms.get(room);
 		if (thisRoom != null) {
 			for (String id : thisRoom.values()) {

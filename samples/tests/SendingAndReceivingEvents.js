@@ -32,4 +32,12 @@ io.sockets.on('connection', function (socket) {
 		console.log(msg);
 		socket.send(msg);
 	});
+
+	socket.on('volatile', function(){
+		socket.volatile.emit('volatile', {msg:"hello"});
+	});
+
+	socket.on('broadcast', function(){
+		socket.broadcast.emit('broadcast');
+	});
 });

@@ -349,6 +349,84 @@ socket.on("message", function(msg){
 			</div>
 			<div class="item">
 				<div class="page-header">
+					<h1 id="seventhTest">socket.volatile.emit(event, msg) <span class="label label-info">server api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the server can send a volatile message by <span class="label">socket.volatile.send(event, msg)</span>.</span></label>
+				<button id="sendBtn6" class="btn">Send</button>
+				<span class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.volatile.emit('volatile', {msg:"hello"});
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.volatilize().emit("volatile", new JsonObject().putString("msg", "hello"));
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on("volatile", function(msg){
+	// do something
+}
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
+					<h1 id="eighthTest">socket.broadcast.emit(event) <span class="label label-info">server api</span></h1>
+				</div>
+				<label>Test: <span class="help-inline">Check if the server can broadcast a message by <span class="label">socket.volatile.send(event, msg)</span>.</span></label>
+				Client1: <button id="sendBtn7" class="btn">Send</button>
+				<span class="help-inline"></span>
+				Client2:
+				<span id="client2" class="help-inline"></span>
+				<hr class="soften">
+				<div class="page-header">
+					<h1>Codes</h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.broadcast.emit('broadcast');
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.broadcast().emit("broadcast");
+</pre>
+					</div>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on("boradcast", function(msg){
+	// do something
+}
+</pre>
+					</div>
+				</div>
+			</div>
+			<div class="item">
+				<div class="page-header">
 					<h1>Passed All Tests</h1>
 				</div>
 				<label>Go back to <a href="/">home</a> or restart <a href="/tests/sending-and-receiving-events.html">this test</a>.</label>
@@ -383,17 +461,21 @@ socket.on("message", function(msg){
 		var $test = $('#myCarousel')
 				, socket
 				, $connectBtn = $('#connectBtn')
-				, $sendBtn = $("#sendBtn")
-				, $sendBtn2 = $("#sendBtn2")
-				, $sarResult = $("#sarResult")
-				, $sendBtn3 = $("#sendBtn3")
+				, $sendBtn = $('#sendBtn')
+				, $sendBtn2 = $('#sendBtn2')
+				, $sarResult = $('#sarResult')
+				, $sendBtn3 = $('#sendBtn3')
 				, $sendBtnNext = $sendBtn.next()
 				, $sendBtn2Next = $sendBtn2.next()
 				, $sendBtn3Next = $sendBtn3.next()
-				, $sendBtn4 = $("#sendBtn4")
+				, $sendBtn4 = $('#sendBtn4')
 				, $sendBtn4Next = $sendBtn4.next()
-				, $sendBtn5 = $("#sendBtn5")
+				, $sendBtn5 = $('#sendBtn5')
 				, $sendBtn5Next = $sendBtn5.next()
+				, $sendBtn6 = $('#sendBtn6')
+				, $sendBtn6Next = $sendBtn6.next()
+				, $sendBtn7 = $('#sendBtn7')
+				, $sendBtn7Next = $sendBtn7.next()
 		;
 
 		$test.carousel('pause');
@@ -402,45 +484,56 @@ socket.on("message", function(msg){
 			$test.carousel('next');
 		}
 
+		function got($element, $title) {
+			$title.append(" <span class='label label-success'>Passed</span>");
+			$element.append(" <span class='label label-success'>Received</span>");
+			$element.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+		}
+
+		function sent($element) {
+			$element.empty();
+			$element.append("<span class='label label-success'>Sent</span>");
+		}
+
 		$connectBtn.click(function(){
 			socket = io.connect($("#urlInput").val());
 			socket.on("connect", function(){
 				$connectBtn.next().append("<button class='btn btn-info' onclick='next();'>Next</button>");
 			});
 
-			socket.on("this", function(msg){
+			socket.on('this', function(msg){
 				console.log(msg);
-				$("#firstTest").append(" <span class='label label-success'>Passed</span>");
-				$sarResult.append("<span class='label label-success'>Received</span> message is: " + msg.will);
-				$sarResult.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
-
+				got($sarResult, $('#firstTest'));
+				$sarResult.append(' message id: ' + JSON.stringify(msg));
 			});
 
-			socket.on("msg", function(msg){
+			socket.on('msg', function(msg){
 				console.log(msg);
-				$("#thirdTest").append(" <span class='label label-success'>Passed</span>");
-				$sendBtn2Next.append(" <span class='label label-success'>Received</span> message is: " + msg.msg);
-				$sendBtn2Next.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+				got($sendBtn2Next, $('#thirdTest'));
+				$sendBtn2Next.append(' message id: ' + JSON.stringify(msg));
 			});
 
-			socket.on("event", function(){
-				$("#forthTest").append(" <span class='label label-success'>Passed</span>");
-				$sendBtn3Next.append(" <span class='label label-success'>Received</span>");
-				$sendBtn3Next.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			socket.on('event', function(){
+				got($sendBtn3Next, $('#forthTest'));
 			});
 
-			socket.on("global event", function(){
-				$("#fifthTest").append(" <span class='label label-success'>Passed</span>");
-				$sendBtn4Next.append(" <span class='label label-success'>Received</span>");
-				$sendBtn4Next.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			socket.on('global event', function(){
+				got($sendBtn4Next, $('#fifthTest'));
 			});
 
-			socket.on("message", function(msg){
-				$("#sixthTest").append(" <span class='label label-success'>Passed</span>");
-				$sendBtn5Next.append(" <span class='label label-success'>Received</span> " + msg);
-				$sendBtn5Next.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			socket.on('message', function(msg){
+				got($sendBtn5Next, $('#sixthTest'));
+				$sendBtn5Next.append(" " + msg);
 			});
 
+			socket.on('volatile', function(msg){
+				got($sendBtn6Next, $('#seventhTest'));
+				$sendBtn6Next.append(" " + JSON.stringify(msg));
+			});
+
+			socket.on('broadcast', function(){
+				got($client2, $('#eighthTest'));
+			});
 		});
 
 		$sendBtn.click(function(){
@@ -450,32 +543,37 @@ socket.on("message", function(msg){
 			$sendBtnNext.append("<span class='label label-success'>Sent</span> Check out the sever's log.");
 			$("#secondTest").append(" <span class='label label-success'>Passed</span>");
 			$sendBtnNext.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
-
 		});
 
 		$sendBtn2.click(function(){
 			var msg = $("#msgInput2").val();
 			socket.emit('msg', {msg:msg});
-			$sendBtn2Next.empty();
-			$sendBtn2Next.append("<span class='label label-success'>Sent</span>");
+			sent($sendBtn2Next);
 		});
 
 		$sendBtn3.click(function(){
 			socket.emit('event');
-			$sendBtn3Next.empty();
-			$sendBtn3Next.append("<span class='label label-success'>Sent</span>");
+			sent($sendBtn3Next);
 		});
 
 		$sendBtn4.click(function(){
 			socket.emit('global event');
-			$sendBtn4Next.empty();
-			$sendBtn4Next.append("<span class='label label-success'>Sent</span>");
+			sent($sendBtn4Next);
 		});
 
 		$sendBtn5.click(function(){
 			socket.send($("#msgInput3").val());
-			$sendBtn5Next.empty();
-			$sendBtn5Next.append("<span class='label label-success'>Sent</span>");
+			sent($sendBtn5Next);
+		});
+
+		$sendBtn6.click(function(){
+			socket.emit('volatile');
+			sent($sendBtn6Next);
+		});
+
+		$sendBtn7.click(function(){
+			socket.emit('broadcast');
+			sent($sendBtn7Next);
 		});
 	});
 </script>
