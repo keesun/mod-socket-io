@@ -1,8 +1,10 @@
 package com.nhncorp.mods.socket.io.impl;
 
+import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.shareddata.Shareable;
 import org.vertx.java.core.shareddata.impl.SharedMap;
 
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -32,5 +34,14 @@ public class RoomClient implements Shareable {
 
 	public Set<String> rooms() {
 		return rooms.keySet();
+	}
+
+	@Override
+	public String toString() {
+		JsonObject result = new JsonObject();
+		for(Map.Entry<String, Boolean> entry : rooms.entrySet()) {
+			result.putBoolean(entry.getKey(), entry.getValue());
+		}
+		return result.toString();
 	}
 }

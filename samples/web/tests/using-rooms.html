@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Socket.io tests</title>
+	<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/js/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="/js/bootstrap/css/docs.css" rel="stylesheet">
+	<link href="/css/prettify.css" rel="stylesheet">
+	<style>
+			/*body {*/
+			/*padding-top: 60px;*/
+			/*}*/
+	</style>
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
+			<a class="brand" href="#">Socket.io Test</a>
+			<div class="nav-collapse collapse">
+				<ul class="nav">
+					<li class="active"><a href="/">Home</a></li>
+					<li><a href="#about">About</a></li>
+					<li><a href="#contact">Contact</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+</div>
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1>Using Rooms</h1>
+		<p class="lead">Rooms allow simple partitioning of the connected clients.</p>
+	</div>
+</header>
+
+<div class="container">
+<div id="myCarousel" class="carousel slide">
+<div class="carousel-inner">
+<div class="item active">
+	<div class="page-header">
+		<h1 id="globalAuthTest">Connect</h1>
+	</div>
+	<label>Socket.io Server URL</label>
+	<input id="urlInput" type="text" value="http://localhost:9191">
+	<span class="help-block">Please input the Socket.io server to connect.</span>
+	<button id="connectBtn" class="btn">Connect</button>
+	<span class="help-inline"></span>
+	<hr class="soften">
+	<div class="page-header">
+		<h1>Codes</h1>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+var io = require('socket.io').listen(9090);
+io.sockets.on('connection', function (socket) {
+	// do something
+}
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+final SocketIOServer io = new DefaultSocketIOServer(vertx, server);
+io.sockets().onConnection(new Handler&lt;SocketIOSocket&gt;() {
+	public void handle(final SocketIOSocket socket) {
+	// do something
+	}
+});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+var socket = io.connect($("#urlInput").val());
+</pre>
+		</div>
+	</div>
+</div>
+<div class="item">
+	<div class="page-header">
+		<h1 id="joinTest">Joining</h1>
+	</div>
+	<label>Test: <span class="help-inline">Check if a socket can join a room by using <span class="label">socket.join('room')</span>.</span></label>
+	<button id="joinBtn" class="btn">Join</button>
+	<span class="help-inline"></span>
+	<hr class="soften">
+	<div class="page-header">
+		<h1>Codes</h1>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on('subscribe', function(data){
+	var room = data.room;
+	socket.join(room);
+	socket.emit('join:' + room);
+});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.on("subscribe", new Handler&lt;JsonObject&gt;() {
+	public void handle(JsonObject data) {
+		String room = data.getString("room");
+		socket.join(room);
+		socket.emit("join" + room);
+	}
+});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.emit('subscribe');
+</pre>
+		</div>
+	</div>
+</div>
+<div class="item">
+	<div class="page-header">
+		<h1 id="emitTest">Emitting to a room</h1>
+	</div>
+	<label>Test: <span class="help-inline">Check if a socket can emit a message to a room by using <span class="label">io.sockets.in('room').emit(event, msg)</span>.</span></label>
+	<button id="emitBtn" class="btn">Emit</button>
+	<span class="help-inline"></span>
+	<hr class="soften">
+	<div class="page-header">
+		<h1>Codes</h1>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on('emit', function(data){
+	var room = data.room;
+	io.sockets.in(room).emit('emit', data);
+});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.on("emit", new Handler&lt;JsonObject&gt;() {
+	public void handle(JsonObject data) {
+		String room = data.getString("room");
+		io.sockets().in(room).emit("emit", data);
+	}
+});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.emit('emit');
+</pre>
+		</div>
+	</div>
+</div>
+<div class="item">
+	<div class="page-header">
+		<h1 id="leaveTest">Leaving</h1>
+	</div>
+	<label>Test: <span class="help-inline">Check if a socket can leave a room by using <span class="label">socket.leave(room)</span>.</span></label>
+	<button id="leaveBtn" class="btn">Leave</button>
+	<span class="help-inline"></span>
+	<hr class="soften">
+	<div class="page-header">
+		<h1>Codes</h1>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.on('unsubscribe', function(data){
+	var room = data.room;
+	socket.leave(room);
+	socket.emit('leave:' + room);
+});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
+<pre class="prettyprint linenums languague-java">
+socket.on("unsubscribe", new Handler&lt;JsonObject&gt;() {
+	public void handle(JsonObject data) {
+		String room = data.getString("room");
+		socket.leave(room);
+		socket.emit("leave:" + room);}
+	}
+});
+</pre>
+		</div>
+	</div>
+	<div class="row">
+		<div class="span12">
+			<h3>Socket.io client</h3>
+<pre class="prettyprint linenums languague-javascript">
+socket.emit('unsubscribe');
+</pre>
+		</div>
+	</div>
+</div>
+<div class="item">
+	<div class="page-header">
+		<h1>Getting information about rooms.</h1>
+	</div>
+	<table class="table table-bordered table-striped">
+		<thead>
+		    <tr>
+			    <th></th>
+			    <th>Node.js with <small>socket.io</small></th>
+			    <th>Vert.x with <small>mod-socket-io</small></th>
+		    </tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>All rooms</th>
+				<td>io.sockets.manager.rooms</td>
+				<td>io.sockets().manager().rooms()</td>
+			</tr>
+			<tr>
+				<th>Clients in a room</th>
+				<td>io.sockets.clients(room)</td>
+				<td>io.sockets().clients(room)</td>
+			</tr>
+			<tr>
+				<th>Rooms a client has joined</th>
+				<td>io.sockets.manager.roomClients[socket.id]</td>
+				<td>io.sockets().manager().roomClients(socket.getId())</td>
+			</tr>
+		</tbody>
+	</table>
+	<button class='btn btn-info' onclick='next();'>Next</button>
+</div>
+<div class="item">
+	<div class="page-header">
+		<h1>Passed All Tests</h1>
+	</div>
+	<label>Go back to <a href="/">home</a> or restart <a href="/tests/using-rooms.html">this test</a>.</label>
+</div>
+</div>
+</div>
+</div>
+
+<footer class="footer">
+	<div class="container">
+		<p class="pull-right"><a href="#">Back to top</a></p>
+		<p>For more information, come and get some, <a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a>.</p>
+		<p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<p>Icons from <a href="http://glyphicons.com">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<p>Designs from <a href="http://twitter.github.com/bootstrap">Twitter, Bootsrap</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+		<ul class="footer-links">
+			<li><a href="http://vertx.io">Vert.x</a></li>
+			<li><a href="http://socket.io">Socket.io</a></li>
+			<li><a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a></li>
+		</ul>
+	</div>
+</footer>
+
+<script src="/js/jquery-1.7.2.min.js"></script>
+<script src="/js/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/socket.io-0.9.10.js"></script>
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+	$(function(){
+		prettyPrint();
+
+		var $test = $('#myCarousel')
+				, socket
+				, $connectBtn = $('#connectBtn')
+				, $connectBtnNext = $connectBtn.next()
+				, $joinBtn = $('#joinBtn')
+				, $joinBtnNext = $joinBtn.next()
+				, $emitBtn = $('#emitBtn')
+				, $emitBtnNext = $emitBtn.next()
+				, $leaveBtn = $('#leaveBtn')
+				, $leaveBtnNext = $leaveBtn.next()
+				;
+
+		$test.carousel('pause');
+
+		next = function() {
+			$test.carousel('next');
+		}
+
+		function sent($element) {
+			$element.empty();
+			$element.append("<span class='label label-success'>Sent</span>");
+		}
+
+		function got($element, $title) {
+			$element.append(" <button class='btn btn-info' onclick='next();'>Next</button>");
+			$title.append(" <span class='label label-success'>Passed</span>");
+		}
+
+		$connectBtn.click(function(){
+			socket = io.connect($('#urlInput').val());
+			socket.on("connect", function(){
+				got($connectBtnNext, $('#globalAuthTest'));
+			});
+			socket.on("join:chat", function(){
+				got($joinBtnNext, $('#joinTest'));
+			});
+			socket.on("emit", function(data){
+				$emitBtnNext.append(" " + JSON.stringify(data));
+				got($emitBtnNext, $('#emitTest'));
+			});
+			socket.on('leave:chat', function(){
+				got($leaveBtnNext, $('#leaveTest'));
+			});
+		});
+
+		$joinBtn.click(function(){
+			socket.emit('subscribe', {room:'chat'});
+			sent($joinBtnNext);
+		});
+
+		$emitBtn.click(function(){
+			socket.emit('emit', {room:'chat', msg:'hi'});
+			sent($emitBtnNext);
+		});
+
+		$leaveBtn.click(function(){
+			socket.emit('unsubscribe', {room:'chat'});
+			sent($leaveBtnNext);
+		});
+	});
+</script>
+</body>
+</html>

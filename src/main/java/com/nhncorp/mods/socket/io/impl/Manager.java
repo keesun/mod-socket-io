@@ -525,4 +525,11 @@ public class Manager {
 	}
 
 
+	public Map<String, Room> rooms() {
+		return this.rooms;
+	}
+
+	public RoomClient roomClients(String id) {
+		return this.roomClients.get(id);
+	}
 }

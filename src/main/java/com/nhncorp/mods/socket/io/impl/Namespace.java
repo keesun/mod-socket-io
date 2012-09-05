@@ -376,4 +376,15 @@ public class Namespace implements Shareable {
 		this.authHandler = authHandler;
 		return this;
 	}
+
+	public Manager manager() {
+		return this.manager;
+	}
+
+	public String[] clients(String roomName) {
+		Room room = this.manager().rooms().get(this.getName() + "/" + roomName);
+		if(room == null)
+			return null;
+		return room.values();
+	}
 }
