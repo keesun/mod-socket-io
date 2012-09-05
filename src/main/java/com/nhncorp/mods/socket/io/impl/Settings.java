@@ -185,4 +185,108 @@ public class Settings {
 	public List<String> getBlacklist() {
 		return blacklist;
 	}
+
+	public void setOrigins(String origins) {
+		this.origins = origins;
+	}
+
+	public void setLog(boolean log) {
+		this.log = log;
+	}
+
+	public void setStore(Store store) {
+		this.store = store;
+	}
+
+	public void setStatic(String aStatic) {
+		Static = aStatic;
+	}
+
+	public void setHeartbeats(boolean heartbeats) {
+		this.heartbeats = heartbeats;
+	}
+
+	public void setNamespace(String namespace) {
+		this.namespace = namespace;
+	}
+
+	public void setTransports(String transports) {
+		this.transports = transports;
+	}
+
+	public void setAuthorization(boolean authorization) {
+		this.authorization = authorization;
+	}
+
+	public void setBlacklist(List<String> blacklist) {
+		this.blacklist = blacklist;
+	}
+
+	public void setCloseTimeout(int closeTimeout) {
+		this.closeTimeout = closeTimeout;
+	}
+
+	public void setHeartbeatInterval(int heartbeatInterval) {
+		this.heartbeatInterval = heartbeatInterval;
+	}
+
+	public void setHeartbeatTimeout(int heartbeatTimeout) {
+		this.heartbeatTimeout = heartbeatTimeout;
+	}
+
+	public void setPollingDuration(int pollingDuration) {
+		this.pollingDuration = pollingDuration;
+	}
+
+	public void setFlashPolicyServer(boolean flashPolicyServer) {
+		this.flashPolicyServer = flashPolicyServer;
+	}
+
+	public void setFlashPolicyPort(int flashPolicyPort) {
+		this.flashPolicyPort = flashPolicyPort;
+	}
+
+	public void setDestroyUpgrade(boolean destroyUpgrade) {
+		this.destroyUpgrade = destroyUpgrade;
+	}
+
+	public void setDestryBufferSize(int destryBufferSize) {
+		this.destryBufferSize = destryBufferSize;
+	}
+
+	public void setBrowserClient(boolean browserClient) {
+		this.browserClient = browserClient;
+	}
+
+	public void setBrowserClientCache(boolean browserClientCache) {
+		this.browserClientCache = browserClientCache;
+	}
+
+	public void setBrowserClientMinification(boolean browserClientMinification) {
+		this.browserClientMinification = browserClientMinification;
+	}
+
+	public void setBrowserClientEtag(boolean browserClientEtag) {
+		this.browserClientEtag = browserClientEtag;
+	}
+
+	public void setBrowserClientExpires(int browserClientExpires) {
+		this.browserClientExpires = browserClientExpires;
+	}
+
+	public void setBrowserClientGzip(boolean browserClientGzip) {
+		this.browserClientGzip = browserClientGzip;
+	}
+
+	public void setBrowserClientHandler(boolean browserClientHandler) {
+		this.browserClientHandler = browserClientHandler;
+	}
+
+	public void setClientStoreExpiration(int clientStoreExpiration) {
+		this.clientStoreExpiration = clientStoreExpiration;
+	}
+
+	public void setMatchOriginProtocol(boolean matchOriginProtocol) {
+		this.matchOriginProtocol = matchOriginProtocol;
+	}
 }

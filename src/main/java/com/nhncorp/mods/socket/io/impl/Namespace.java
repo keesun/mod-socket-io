@@ -371,4 +371,9 @@ public class Namespace implements Shareable {
 		packet.putString("name", event);
 		packet(packet);
 	}
+
+	public Namespace setAuthHandler(AuthorizationHandler authHandler) {
+		this.authHandler = authHandler;
+		return this;
+	}
 }

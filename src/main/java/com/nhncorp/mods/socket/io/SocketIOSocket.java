@@ -1,5 +1,6 @@
 package com.nhncorp.mods.socket.io;
 
+import com.nhncorp.mods.socket.io.impl.HandshakeData;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
@@ -64,4 +65,6 @@ public interface SocketIOSocket extends Shareable {
 	void del(String key, Handler<Void> handler);
 
 	void emit(String event, String data);
+
+	HandshakeData handshakeData();
 }

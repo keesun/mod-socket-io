@@ -182,6 +182,11 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 		packet(packet);
 	}
 
+	@Override
+	public HandshakeData handshakeData() {
+		return this.manager.handshakeData(this.id);
+	}
+
 	/**
 	 * Transmits a packet.
 	 *

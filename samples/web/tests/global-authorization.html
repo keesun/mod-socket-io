@@ -35,8 +35,8 @@
 </div>
 <header class="jumbotron subhead" id="overview">
 	<div class="container">
-		<h1>Restricting yourself to a namespace</h1>
-		<p class="lead">Provides a way of namespacing a socket.</p>
+		<h1>Authorization and handshaking</h1>
+		<p class="lead">Authorization can be applied global and namespace level.</p>
 	</div>
 </header>
 
@@ -45,12 +45,17 @@
 <div class="carousel-inner">
 <div class="item active">
 	<div class="page-header">
-		<h1 id="chatConnectTitle">Connect to '/chat' namespace</h1>
+		<h1 id="globalAuthTest">Global authorization</h1>
 	</div>
 	<label>Socket.io Server URL</label>
 	<input id="urlInput" type="text" value="http://localhost:9191">
+	?pass=
+	<select id="passInput">
+		<option value="true">true</option>
+		<option value="false">false</option>
+	</select>
 	<span class="help-block">Please input the Socket.io server to connect.</span>
-	<button id="chatConnectBtn" class="btn">Connect</button>
+	<button id="connectBtn" class="btn">Connect</button>
 	<span class="help-inline"></span>
 	<hr class="soften">
 	<div class="page-header">
@@ -60,59 +65,15 @@
 		<div class="span12">
 			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
 <pre class="prettyprint linenums languague-javascript">
-var chat = io
-		.of('/chat')
-		.on('connection', function (socket) {
-			// do something
-		});
-</pre>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span12">
-			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
-<pre class="prettyprint linenums languague-java">
-final Namespace chat = io.of("/chat");
-chat.onConnection(new Handler&lt;SocketIOSocket&gt;() {
-	public void handle(SocketIOSocket socket) {
-		// do something
-	}
-});
-</pre>
-		</div>
-	</div>
-	<div class="row">
-		<div class="span12">
-			<h3>Socket.io client</h3>
-<pre class="prettyprint linenums languague-javascript">
-var chat = io.connect('http://localhost/chat');
-
-chat.on('connect', function () {
-	// do something
-});
-</pre>
-		</div>
-	</div>
-</div>
-<div class="item">
-	<div class="page-header">
-		<h1 id="newsConnectTitle">Connect to '/news' namespace</h1>
-	</div>
-	<button id="newsConnectBtn" class="btn">Connect</button>
-	<span class="help-inline"></span>
-	<hr class="soften">
-	<div class="page-header">
-		<h1>Codes</h1>
-	</div>
-	<div class="row">
-		<div class="span12">
-			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
-<pre class="prettyprint linenums languague-javascript">
-var news = io
-	.of('/news')
-	.on('connection', function (socket) {
-		// do something
+io.configure(function (){
+	io.set('authorization', function (handshakeData, callback) {
+		if(handshakeData.query.pass && handshakeData.query.pass == 'true') {
+			callback(null, true);
+		} else {
+			callback('reason', false);
+		}
 	});
+});
 </pre>
 		</div>
 	</div>
@@ -120,10 +81,14 @@ var news = io
 		<div class="span12">
 			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
 <pre class="prettyprint linenums languague-java">
-final Namespace news = io.of("/news");
-news.onConnection(new Handler&lt;SocketIOSocket&gt;() {
-	public void handle(SocketIOSocket socket) {
-		// do something
+io.setAuthHandler(new AuthorizationHandler() {
+	public void handle(HandshakeData handshakeData, AuthorizationCallback callback) {
+		boolean isPass = Boolean.parseBoolean(handshakeData.getQueryParams().get("pass"));
+		if(isPass) {
+			callback.handle(null, true);
+		} else {
+			callback.handle(new RuntimeException("reason"), false);
+		}
 	}
 });
 </pre>
@@ -133,10 +98,14 @@ news.onConnection(new Handler&lt;SocketIOSocket&gt;() {
 		<div class="span12">
 			<h3>Socket.io client</h3>
 <pre class="prettyprint linenums languague-javascript">
-var news = io.connect('http://localhost/news');
-
-news.on('news', function () {
-	// do something
+socket = io.connect($('#urlInput').val() + "?pass=" + $('#passInput').val());
+socket.on("connect", function(){
+	// passed
+});
+socket.on('error', function(reason){
+	if(reason === "handshake error") {
+		// not passed
+	}
 });
 </pre>
 		</div>
@@ -144,10 +113,10 @@ news.on('news', function () {
 </div>
 <div class="item">
 	<div class="page-header">
-		<h1 id="chatEmitTest">chat.emit(event, msg) <span class="label label-info">server api</span></h1>
+		<h1 id="getDataTest">set/get Handshake Data</h1>
 	</div>
-	<label>Test: <span class="help-inline">Check if the server can send an event to a namespace by <span class="label">chat.emit(event, msg)</span>.</span></label>
-	<button id="chatEmitBtn" class="btn">Send</button>
+	<label>Test: <span class="help-inline">Check if the server can get/set a key/value from handshake data related with the client by using <span class="label">handshakeData</span>.</span></label>
+	<button id="getBtn" class="btn">Get</button>
 	<span class="help-inline"></span>
 	<hr class="soften">
 	<div class="page-header">
@@ -157,7 +126,12 @@ news.on('news', function () {
 		<div class="span12">
 			<h3>Node.js Server with <span class='label label-info'>socket.io</span></h3>
 <pre class="prettyprint linenums languague-javascript">
-chat.emit('msg', { everyone: 'in', '/chat': 'will get' });
+if(handshakeData.query.pass && handshakeData.query.pass == 'true') {
+	handshakeData.foo = 'bar';
+	callback(null, true);
+}
+	...
+socket.emit('data', {foo:socket.handshake.foo});
 </pre>
 		</div>
 	</div>
@@ -165,7 +139,13 @@ chat.emit('msg', { everyone: 'in', '/chat': 'will get' });
 		<div class="span12">
 			<h3>Vert.x Serer with <span class='label label-info'>socket.io module for vert.x</span></h3>
 <pre class="prettyprint linenums languague-java">
-chat.emit("msg", new JsonObject().putString("everyone", "in").putString("/chat", "will get"));
+if(isPass) {
+	handshakeData.putString("foo", "bar");
+	callback.handle(null, true);
+}
+	...
+String foo = socket.handshakeData().getString("foo");
+socket.emit("data", new JsonObject().putString("foo", foo));
 </pre>
 		</div>
 	</div>
@@ -173,7 +153,7 @@ chat.emit("msg", new JsonObject().putString("everyone", "in").putString("/chat",
 		<div class="span12">
 			<h3>Socket.io client</h3>
 <pre class="prettyprint linenums languague-javascript">
-news.on('connect', function(){
+socket.on('data', function(msg){
 	// do something
 });
 </pre>
@@ -184,7 +164,7 @@ news.on('connect', function(){
 	<div class="page-header">
 		<h1>Passed All Tests</h1>
 	</div>
-	<label>Go back to <a href="/">home</a> or restart <a href="/tests/restricting-yourself-to-a-namespace.html">this test</a>.</label>
+	<label>Go back to <a href="/">home</a> or restart <a href="/tests/global-authorization.html">this test</a>.</label>
 </div>
 </div>
 </div>
@@ -214,16 +194,14 @@ news.on('connect', function(){
 		prettyPrint();
 
 		var $test = $('#myCarousel')
-				, socketIOServerUrl = $("#urlInput").val()
-				, chat
-				, news
-				, $chatConnectBtn = $('#chatConnectBtn')
-				, $chatConnectBtnNext = $chatConnectBtn.next()
-				, $newsConnectBtn = $('#newsConnectBtn')
-				, $newsConnectBtnNext = $newsConnectBtn.next()
-				, $chatEmitBtn = $("#chatEmitBtn")
-				, $chatEmitBtnNext = $chatEmitBtn.next()
-			;
+				, socket
+				, $connectBtn = $('#connectBtn')
+				, $connectBtnNext = $connectBtn.next()
+				, $getBtn = $('#getBtn')
+				, $getBtnNext = $getBtn.next()
+				, $connectBtn2 = $('#connectBtn2')
+				, $connectBtn2Next = $connectBtn2.next()
+				;
 
 		$test.carousel('pause');
 
@@ -241,34 +219,39 @@ news.on('connect', function(){
 			$title.append(" <span class='label label-success'>Passed</span>");
 		}
 
-		$chatConnectBtn.click(function(){
-			chat = io.connect($("#urlInput").val() + "/chat");
-			sent($chatConnectBtnNext);
-
-			chat.on('connect', function(){
-				got($chatConnectBtnNext, $("#chatConnectTitle"));
+		$connectBtn.click(function(){
+			socket = io.connect($('#urlInput').val() + "?pass=" + $('#passInput').val());
+			socket.on("connect", function(){
+				$connectBtnNext.append("passed");
+				got($connectBtnNext, $('#globalAuthTest'));
 			});
-
-			chat.on('msg', function(msg){
-				console.log(msg);
-				$chatEmitBtnNext.append(" got: " + JSON.stringify(msg));
-				got($chatEmitBtnNext, $("#chatEmitTest"));
-
-			})
-		});
-
-		$newsConnectBtn.click(function(){
-			news = io.connect($("#urlInput").val() + "/news");
-			sent($newsConnectBtnNext);
-
-			news.on('connect', function(){
-				got($newsConnectBtnNext, $("#newsConnectTitle"));
+			socket.on('error', function(reason){
+				if(reason === "handshake error") {
+					$connectBtnNext.append("not passed");
+					got($connectBtnNext, $('#globalAuthTest'));
+				}
+			});
+			socket.on('data', function(msg){
+				$getBtnNext.append(JSON.stringify(msg));
+				got($getBtnNext, $('#getDataTest'));
 			});
 		});
 
-		$chatEmitBtn.click(function(){
-			chat.emit("namespace emit");
-			sent($chatConnectBtnNext);
+		$getBtn.click(function(){
+			socket.emit('get');
+			sent($getBtnNext);
+		});
+
+		$connectBtn2.click(function(){
+			var namespace = io.connect($('#urlInput2').val() + '/private?pass=' + $('#passInput2').val());
+			namespace.on('error', function(reason){
+				$connectBtn2Next.append("not passed");
+				got($connectBtn2Next, $('#namespaceAuthTest'));
+			});
+			namespace.on('connect', function(){
+				$connectBtn2Next.append("passed");
+				got($connectBtn2Next, $('#namespaceAuthTest'));
+			});
 		});
 	});
 </script>

@@ -91,6 +91,7 @@ public class DefaultSocketIOServer implements SocketIOServer {
 	}
 
 	public SocketIOServer setAuthHandler(AuthorizationHandler globalAuthHandler) {
+		this.manager.getSettings().setAuthorization(true);
 		this.manager.setGlobalAuthorizationHandler(globalAuthHandler);
 		return this;
 	}

@@ -1,5 +1,6 @@
 package com.nhncorp.mods.socket.io.impl;
 
+import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.shareddata.Shareable;
 
 import java.util.Date;
@@ -13,7 +14,7 @@ import java.util.Map;
  *
  * @author Keesun Baik
  */
-public class HandshakeData implements Shareable {
+public class HandshakeData extends JsonObject implements Shareable {
 
 	// headers: req.headers       // <Object> the headers of the request
 	private Map<String, String> headers;

@@ -99,7 +99,7 @@ public class HandshakeHandler {
 		AuthorizationHandler globalAuthHandler = manager.getGlobalAuthorizationHandler();
 		if(manager.getSettings().isAuthorization()) {
 			if(globalAuthHandler == null) {
-				manager.writeError(request, 500, "global authorization callback is requireed");
+				manager.writeError(request, 500, "global authorization callback is required");
 				return;
 			}
 			globalAuthHandler.handle(handshakeData, new AuthorizationCallback() {
