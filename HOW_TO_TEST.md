@@ -16,7 +16,7 @@ Use, `vertx run /samples/tests/TestWebServer.java` on this project's root direct
 
 /workspace/mod-socket-io > vertx run samples/tests/TestWebServer.java
 
-## Step 2. Go to `http://localhost:8080/`
+## Step 2. Go to [http://localhost:8080](http://localhost:8080)
 
 Open your favorite browser, and type `http://localhost:8080/'. Then, you can see an available tests list.
 
