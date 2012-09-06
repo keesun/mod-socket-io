@@ -11,12 +11,14 @@ The module name is `socket-io`.
 
 You can configure everything that you can configure in the [Socket.io](https://github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO) like:
 
+```java
 	io.configure(new Configurer() {
 		public void configure(JsonObject config) {
 			config.putString("transports", "websocket,flashsocket,htmlfile,xhr-polling,jsonp-polling");
 			config.putBoolean("authorization", true);
 		}
 	});
+```
 
 ## Examples
 
