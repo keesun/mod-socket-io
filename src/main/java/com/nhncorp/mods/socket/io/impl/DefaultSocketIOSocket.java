@@ -289,7 +289,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 * @param handler
 	 */
 	public synchronized void on(String event, final Handler<JsonObject> handler) {
-		String address = id + ":" + event;
+		String address = id + ":" + namespace.getName() + ":" + event;
 		vertx.eventBus().registerHandler(address, new Handler<Message<JsonObject>>() {
 			public void handle(Message<JsonObject> event) {
 				handler.handle(event.body);
@@ -325,7 +325,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 			}
 		}
 
-		vertx.eventBus().send(id + ":" + name, packet);
+		vertx.eventBus().send(id + ":" + namespace.getName() + ":" + name, packet);
 	}
 
 	private JsonObject flatten(JsonArray jsonArray) {
