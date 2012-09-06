@@ -95,7 +95,10 @@ public class HttpRequestHandler {
 //			this.store.publish('connect', data.id);
 
 			// flag as used
-			handshakeData.setIssued(-1l);
+			if(handshakeData != null) {
+				handshakeData.setIssued(-1l);
+			}
+
 			manager.onHandshake(sessionId, handshakeData);
 //			this.store.publish('handshake', data.id, handshaken);
 

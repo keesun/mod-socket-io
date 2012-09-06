@@ -308,7 +308,14 @@ public class Namespace implements Shareable {
 			case "message":
 				JsonObject params = new JsonObject();
 				params.putString("name", "message");
-				params.putString("message", packet.getString("data"));
+
+				Object data = packet.getField("data");
+				if(data instanceof String) {
+					params.putString("message", packet.getString("data"));
+				} else if(data instanceof JsonObject) {
+					params.putObject("message", packet.getObject("data"));
+				}
+
 				if (isDataAck) {
 					params.putString("ack", ack);
 				}

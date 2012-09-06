@@ -185,7 +185,9 @@ public class Manager {
 	 * @param handshakeData
 	 */
 	public void onHandshake(String id, HandshakeData handshakeData) {
-		handshaken.put(id, handshakeData);
+		if(handshaken != null) {
+			handshaken.put(id, handshakeData);
+		}
 	}
 
 	/**

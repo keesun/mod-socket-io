@@ -315,9 +315,14 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 		if(name.equals("disconnect")) {
 			packet.putString("reason", params.getString("reason"));
 		}
-		String message = params.getString("message");
+
+		Object message = params.getField("message");
 		if(message != null) {
-			packet.putString("message", message);
+			if(message instanceof String) {
+				packet.putString("message", params.getString("message"));
+			} else if(message instanceof JsonObject) {
+				packet.putObject("message", params.getObject("message"));
+			}
 		}
 
 		vertx.eventBus().send(id + ":" + name, packet);
@@ -336,7 +341,9 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 			if(o instanceof JsonObject) {
 				result.mergeIn((JsonObject)o);
 			} else if(o instanceof String) {
-				result.putString("data", (String)o);
+				if(result.getField("data") == null) {
+					result.putString("data", (String)o);
+				}
 			}
 		}
 
