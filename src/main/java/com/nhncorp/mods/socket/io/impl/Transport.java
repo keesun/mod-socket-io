@@ -346,7 +346,7 @@ public abstract class Transport implements Shareable {
 	 * @see "Transport.prototype.setCloseTimeout"
 	 */
 	private void setCloseTimeout() {
-		if(this.closeTimeout != -1l) {
+		if(this.closeTimeout == -1l) {
 			this.closeTimeout = vertx.setTimer(this.manager.getSettings().getCloseTimeout() * 1000, new Handler<Long>() {
 				public void handle(Long event) {
 					log.debug("fired close timeout for client " + sessionId);
