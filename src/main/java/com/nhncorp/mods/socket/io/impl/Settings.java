@@ -15,17 +15,12 @@ public class Settings {
 	private String origins = "*:*";
 	private boolean log = true;
 	private Store store = new MemoryStore();
-//	private Logger logger;
 	private String Static = "static";
 	private boolean heartbeats = true;
 	private String namespace = "/socket.io";
 	private String transports = "websocket,htmlfile,xhr-polling,jsonp-polling";
 	private boolean authorization = false;
 	private List<String> blacklist = Arrays.asList(new String[]{"disconnect"});
-
-//	private int logLevel = 3; // TODO vert.x log level 설정 방법으로 변경.
-//	private String logColors // 'log colors': tty.isatty(process.stdout.fd)
-
 	private int closeTimeout = 60;
 	private int heartbeatInterval = 25;
 	private int heartbeatTimeout = 60;
