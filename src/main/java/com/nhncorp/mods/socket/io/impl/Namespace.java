@@ -199,10 +199,12 @@ public class Namespace implements Shareable {
 	public void handleDisconnect(String sessionId, String reason, boolean raiseOnDisconnect) {
 		SocketIOSocket socket = sockets.get(sessionId);
 		if (socket != null && socket.isReadable()) {
-			if (raiseOnDisconnect)
+			if (raiseOnDisconnect) {
 				socket.onDisconnect(reason);
-			// TODO 동기화 고려가 되어야 함
-			sockets.remove(sessionId);
+			}
+			if (sockets.containsKey(sessionId)) {
+				sockets.remove(sessionId);
+			}
 		}
 	}
 
