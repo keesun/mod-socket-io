@@ -54,7 +54,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 *
 	 * @see "Socket.prototype.setFlags"
 	 */
-	private synchronized void setupFlags() {
+	private void setupFlags() {
 		this.flags = new JsonObject();
 		flags.putString("endpoint", this.namespace.getName());
 		flags.putString("room", Manager.DEFAULT_NSP);
@@ -164,7 +164,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 * @param packet
 	 * @return
 	 */
-	public synchronized void packet(JsonObject packet) {
+	public void packet(JsonObject packet) {
 		if(this.flags.getBoolean("broadcast", false)) {
 			log.debug("broadcasting packet");
 			this.namespace.in(this.flags.getString("room")).except(this.getId()).packet(packet);
@@ -184,7 +184,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 * @param encodedPacket
 	 * @param isVolatile
 	 */
-	private synchronized void dispatch(String encodedPacket, boolean isVolatile) {
+	private void dispatch(String encodedPacket, boolean isVolatile) {
 		Transport transport = this.manager.getTranport(this.id);
 		if( transport != null && transport.isOpen() ) {
 			transport.onDispatch(encodedPacket, isVolatile);
@@ -204,7 +204,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 * @param jsonObject
 	 * @return
 	 */
-	public synchronized void emit(String event, JsonObject jsonObject) {
+	public void emit(String event, JsonObject jsonObject) {
 //		if (ev == 'newListener') {
 //			return this.$emit.apply(this, arguments);
 //		}
@@ -232,10 +232,9 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 *
 	 * @param reason
 	 */
-	public synchronized void emitDisconnect(String reason) {
+	public void emitDisconnect(String reason) {
 		JsonObject packet = new JsonObject();
 		packet.putString("reason", reason);
-//		emit("disconnect", packet);
 		packet.putString("name", "disconnect");
 		emit(packet);
 	}
@@ -288,14 +287,13 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 * @param event
 	 * @param handler
 	 */
-	public synchronized void on(String event, final Handler<JsonObject> handler) {
+	public void on(String event, final Handler<JsonObject> handler) {
 		String address = id + ":" + namespace.getName() + ":" + event;
 		vertx.eventBus().registerHandler(address, new Handler<Message<JsonObject>>() {
 			public void handle(Message<JsonObject> event) {
 				handler.handle(event.body);
 			}
 		});
-
 		addresses.add(address);
 	}
 
@@ -309,7 +307,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	}
 
 	// $emit
-	public synchronized void emit(JsonObject params) {
+	public void emit(JsonObject params) {
 		String name = params.getString("name", "message");
 		JsonObject packet = flatten(params.getArray("args"));
 		if(name.equals("disconnect")) {
@@ -356,7 +354,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 * @see "Socket.prototype.onDisconnect"
 	 * @param reason
 	 */
-	public synchronized void onDisconnect(String reason) {
+	public void onDisconnect(String reason) {
 		if(!this.disconnected) {
 			emitDisconnect(reason);
 			for(String address : addresses) {
