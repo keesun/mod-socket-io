@@ -16,11 +16,5 @@ public class FileTests {
 		Path path = FileSystems.getDefault().getPath("./src/main/resources/socket.io.js");
 		System.out.println(path.toFile().isFile());
 		System.out.println(path.toString());
-
-		ClassLoader classLoader = this.getClass().getClassLoader();
-		URL resource = classLoader.getResource("/socket.io.js");
-		String pathString = resource.getFile();
-		System.out.println(pathString);
-
 	}
 }

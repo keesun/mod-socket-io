@@ -35,6 +35,7 @@ repositories {
 }
 
 dependencies {
+  compile      "org.springframework:spring-beans:$springVersion"
   compile      "org.slf4j:slf4j-api:$slf4jVersion"
   compile      "ch.qos.logback:logback-classic:1.0.6"
   provided     "org.vert-x:vertx-core:$vertxVersion"
@@ -47,6 +48,7 @@ dependencies {
   }
   testCompile  "org.mozilla:rhino:$rhinoVersion"
   testCompile  "junit:junit:$junitVersion"
+  testCompile  "org.mockito:mockito-all:1.9.0"
 }
 
 sourceSets {

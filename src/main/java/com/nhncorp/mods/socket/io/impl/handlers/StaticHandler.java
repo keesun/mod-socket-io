@@ -2,9 +2,14 @@ package com.nhncorp.mods.socket.io.impl.handlers;
 
 import com.nhncorp.mods.socket.io.impl.ClientData;
 import com.nhncorp.mods.socket.io.impl.Manager;
+import org.springframework.util.FileCopyUtils;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.HttpServerResponse;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +35,12 @@ public class StaticHandler {
 		HttpServerRequest req = clientData.getRequest();
 		HttpServerResponse res = req.response;
 		String requestedFileName = clientData.getPath();
-		String resourceRootDir = System.getProperty("user.dir") + "/mods/nhn.socket-io-v0.9.10/static";
+		String resourceRootDir = getRootDir();
+
+		File rootDir = new File(requestedFileName);
+		if(!rootDir.exists()) {
+			copyFilesToDir();
+		}
 
 		switch (requestedFileName) {
 			case "/static/flashsocket/WebSocketMainInsecure.swf":
@@ -51,8 +61,32 @@ public class StaticHandler {
 		res.close();
 	}
 
+	private void copyFilesToDir() {
+		String[] fileNames = new String[]{"socket.io.js", "socket.io.min.js", "WebSocketMain.swf", "WebSocketMainInsecure.swf"};
+		String rootDir = getRootDir() + "/";
+
+		for(String fileName : fileNames) {
+			ClassLoader loader = this.getClass().getClassLoader();
+			InputStream is = loader.getResourceAsStream(fileName);
+			String path = rootDir + fileName;
+			File parent = new File(path).getParentFile();
+			if(parent != null && !parent.exists()) {
+				parent.mkdirs();
+			}
+			try {
+				FileCopyUtils.copy(is, new FileOutputStream(path));
+			} catch (IOException e) {
+				throw new IllegalStateException("static file copy failed", e);
+			}
+		}
+	}
+
 	public static boolean has(String path) {
 		return STAIC_FLIE_NAMES.contains(path);
+	}
+
+	public static String getRootDir(){
+		return System.getProperty("user.dir") + "/mods/nhn.socket-io-v0.9.10/static";
 	}
 
 }
