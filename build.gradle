@@ -17,6 +17,7 @@
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 
 defaultTasks = ['assemble']
 
@@ -113,4 +114,8 @@ task collectDeps(type: Copy) {
   into("test") {
     from configurations.testCompile
   }
+}
+
+task newPom << {
+    pom {}.writeTo("build/pom.xml")
 }
