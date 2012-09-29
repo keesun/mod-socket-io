@@ -7,6 +7,26 @@ Now, This module supports the latest version of the socket.io, 0.9.10.
 
 The module name is `socket-io`.
 
+## Dependency
+
+Add a maven repository contains `mod-socket-io`.
+
+```groovy
+repositories {
+  maven { url 'http://dev.springsprout.org/nexus/content/groups/public/' }
+  ...
+}
+```
+
+Add a dependency.
+
+```groovy
+dependencies {
+  compile      "com.nhncorp:mod-socket-io:0.9.10"
+  ...
+}
+```
+
 ## Configuration
 
 You can configure everything that you can configure in the [Socket.io](https://github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO) like:
