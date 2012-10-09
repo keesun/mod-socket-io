@@ -85,6 +85,15 @@ task prepareVertxTest(type: Sync, dependsOn: 'copyMod' ) {
   into 'build/tmp/mod-test'
 }
 
+task newPom << {
+  pom{}.writeTo("build/pom.xml")
+}
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
 test {
   // Can't have the app on the vert.x classpath
   classpath = files( classpath.findAll {

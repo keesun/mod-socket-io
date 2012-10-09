@@ -7,6 +7,51 @@ Now, This module supports the latest version of the socket.io, 0.9.10.
 
 The module name is `socket-io`.
 
+## Dependency
+
+Add a maven repository contains `mod-socket-io`.
+
+### Gradle
+
+```groovy
+repositories {
+  maven { url 'http://dev.springsprout.org/nexus/content/groups/public/' }
+  ...
+}
+```
+### Maven
+
+```xml
+<repositories>
+  <repository>
+    <id>springsprout</id>
+    <url>http://dev.springsprout.org/nexus/content/groups/public/</url>
+  </reposutory>
+</repositories>
+```
+
+
+Add a dependency.
+
+### Gradle
+
+```groovy
+dependencies {
+  compile      "com.nhncorp:mod-socket-io:0.9.10"
+  ...
+}
+```
+
+### Maven
+
+```maven
+<dependency>
+  <groupId>com.nhncorp</groupId>
+  <artifactId>mod-socket-io</artifactId>
+  <version>0.9.10</version>
+</dependency>
+```
+
 ## Configuration
 
 You can configure everything that you can configure in the [Socket.io](https://github.com/LearnBoost/Socket.IO/wiki/Configuring-Socket.IO) like:
@@ -80,7 +125,7 @@ First, you should include this module's resource by `includes:`.
 
 	{
 		"main": "package.to.your.RunnableClassName",
-		"includes": "nhn.socket-io-v0.9"
+		"includes": "com.nhncorp.socket-io-v0.9.10"
 	}
 
 And, after you put the module's jar file to you module's classpath. You can code like:

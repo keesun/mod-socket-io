@@ -86,7 +86,7 @@ public class StaticHandler {
 	}
 
 	public static String getRootDir(){
-		return System.getProperty("user.dir") + "/mods/nhn.socket-io-v0.9.10/static";
+		return System.getProperty("user.dir") + "/mods/com.nhncorp.socket-io-v0.9.10/static";
 	}
 
 }

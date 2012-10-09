@@ -79,10 +79,12 @@ public abstract class HttpPolling extends Http {
 		if(request.method.equals("GET")) {
 			this.pollTimeout = vertx.setTimer(manager.getSettings().getPollingDuration() * 1000, new Handler<Long>() {
 				public void handle(Long event) {
-					JsonObject packet = new JsonObject();
-					packet.putString("type", "noop");
-					packet(packet);
-					log.debug(name + " closed due to exceeded duration");
+					if(isOpen()) {
+						JsonObject packet = new JsonObject();
+						packet.putString("type", "noop");
+						packet(packet);
+						log.debug(name + " closed due to exceeded duration");
+					}
 				}
 			});
 
