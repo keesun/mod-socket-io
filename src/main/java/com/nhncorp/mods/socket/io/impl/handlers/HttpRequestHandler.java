@@ -79,8 +79,8 @@ public class HttpRequestHandler {
 			String sessionId = clientData.getId();
 			List<Buffer> buffers = manager.closed(sessionId);
 			if (buffers != null && buffers.size() > 0) {
-				transport.payload(buffers);
 				manager.removeClosed(sessionId);
+				transport.payload(buffers);
 			}
 
 			manager.onOpen(sessionId);
