@@ -16,33 +16,31 @@ import java.util.Map;
  */
 public class Parser {
 
-	private Map<String, Integer> packets;
-	private String[] packetslist;
-	private Map<String, Integer> reasons;
-	private String[] reasonsList;
-	private Map<String, Integer> advices;
-	private String[] adviceList;
+	Map<String, Integer> packets;
+	String[] packetslist;
+	Map<String, Integer> reasons;
+	String[] reasonsList;
+	Map<String, Integer> advices;
+	String[] adviceList;
 
 	public Parser() {
 		packetslist = new String[]{"disconnect", "connect", "heartbeat", "message", "json", "event", "ack", "error", "noop"};
 		packets = new HashMap<>();
-		int index = 0;
-		for(String packet : packetslist) {
-			packets.put(packet, index++);
-		}
+		fillMapWithList(packets, packetslist);
 
 		reasonsList = new String[]{"transport not supported", "client not handshaken", "unauthorized"};
 		reasons = new HashMap<>();
-		index = 0;
-		for(String reason : reasonsList) {
-			reasons.put(reason, index++);
-		}
+		fillMapWithList(reasons, reasonsList);
 
 		adviceList = new String[]{"reconnect"};
 		advices = new HashMap<>();
-		index = 0;
-		for(String adv : adviceList) {
-			advices.put(adv, index++);
+		fillMapWithList(advices, adviceList);
+	}
+
+	private void fillMapWithList(Map<String, Integer> map, String[] list) {
+		int index = 0;
+		for(String key : list) {
+			map.put(key, index++);
 		}
 	}
 
