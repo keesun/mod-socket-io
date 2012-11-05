@@ -26,7 +26,7 @@ repositories {
   <repository>
     <id>springsprout</id>
     <url>http://dev.springsprout.org/nexus/content/groups/public/</url>
-  </reposutory>
+  </repository>
 </repositories>
 ```
 
