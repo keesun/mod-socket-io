@@ -42,7 +42,7 @@ public class XhrPolling extends HttpPolling {
 		String origin = request.headers().get("Origin");
 		Map<String, Object> resHeaders = response.headers();
 		resHeaders.put("Content-Type", "text/plain; charset=UTF-8");
-		resHeaders.put("Content-Length", encodedPacket == null ? 0 : encodedPacket.length());
+		resHeaders.put("Content-Length", encodedPacket == null ? 0 : encodedPacket.getBytes().length);
 		resHeaders.put("Connection", "Keep-Aplive");
 
 		if(origin != null) {

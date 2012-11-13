@@ -22,7 +22,7 @@ public abstract class DefaultEmbeddableVerticle implements EmbeddableVerticle {
 			vertx = beanFactory.getBean(Vertx.class);
 		} catch (NoSuchBeanDefinitionException e) {
 			if(host() != null) {
-				if(port() != 0) {
+				if(port() != -1) {
 					vertx = Vertx.newVertx(port(), host());
 				} else {
 					vertx = Vertx.newVertx(host());
@@ -40,7 +40,7 @@ public abstract class DefaultEmbeddableVerticle implements EmbeddableVerticle {
 	}
 
 	public int port(){
-		return 0;
+		return -1;
 	}
 
 }
