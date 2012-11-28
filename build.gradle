@@ -124,7 +124,3 @@ task collectDeps(type: Copy) {
     from configurations.testCompile
   }
 }
-
-task newPom << {
-    pom {}.writeTo("build/pom.xml")
-}
