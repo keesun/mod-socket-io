@@ -39,8 +39,8 @@ dependencies {
   compile      "org.springframework:spring-beans:$springVersion"
   compile      "org.slf4j:slf4j-api:$slf4jVersion"
   compile      "ch.qos.logback:logback-classic:1.0.6"
-  provided     "org.vert-x:vertx-core:$vertxVersion"
-  provided     "org.vert-x:vertx-platform:$vertxVersion"
+  compile     "org.vert-x:vertx-core:$vertxVersion"
+  compile     "org.vert-x:vertx-platform:$vertxVersion"
 
   testCompile  "org.vert-x:vertx-lang-java:$vertxVersion"
   testCompile  "org.vert-x:vertx-lang-rhino:$vertxVersion"

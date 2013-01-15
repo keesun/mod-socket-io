@@ -44,7 +44,7 @@ public class XhrPolling extends HttpPolling {
 		Map<String, Object> resHeaders = response.headers();
 		resHeaders.put("Content-Type", "text/plain; charset=UTF-8");
 		resHeaders.put("Content-Length", encodedPacket == null ? 0 : encodedPacket.getBytes(Charset.forName("UTF-8")).length);
-		resHeaders.put("Connection", "Keep-Aplive");
+		resHeaders.put("Connection", "Keep-Alive");
 
 		if(origin != null) {
 			// https://developer.mozilla.org/En/HTTP_Access_Control

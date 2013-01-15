@@ -25,23 +25,25 @@ public class WebSocketTransport extends Transport {
 
 		webSocket = clientData.getSocket();
 
-		webSocket.exceptionHandler(new Handler<Exception>() {
-			public void handle(Exception e) {
-				end("socket error " + ((e != null) ? e.getMessage() : ""));
-			}
-		});
+		if(webSocket != null) {
+			webSocket.exceptionHandler(new Handler<Exception>() {
+				public void handle(Exception e) {
+					end("socket error " + ((e != null) ? e.getMessage() : ""));
+				}
+			});
 
-		webSocket.closedHandler(new Handler<Void>() {
-			public void handle(Void event) {
-				end("socket end");
-			}
-		});
+			webSocket.closedHandler(new Handler<Void>() {
+				public void handle(Void event) {
+					end("socket end");
+				}
+			});
 
-		webSocket.dataHandler(new Handler<Buffer>() {
-			public void handle(Buffer buffer) {
-				onMessage(parser.decodePacket(buffer.toString()));
-			}
-		});
+			webSocket.dataHandler(new Handler<Buffer>() {
+				public void handle(Buffer buffer) {
+					onMessage(parser.decodePacket(buffer.toString()));
+				}
+			});
+		}
 	}
 
 	/**
@@ -51,7 +53,13 @@ public class WebSocketTransport extends Transport {
 	 */
 	@Override
 	protected void doClose() {
-		webSocket.close();
+		if(webSocket != null) {
+			try {
+				webSocket.close();
+			} catch (IllegalStateException e) {
+				log.debug(getName() + " was already closed");
+			}
+		}
 	}
 
 	@Override
@@ -61,8 +69,10 @@ public class WebSocketTransport extends Transport {
 
 	@Override
 	public void write(String encodedPacket) {
-		log.debug(getName() + " writing " + encodedPacket);
-		webSocket.writeTextFrame(encodedPacket);
+		if(webSocket != null) {
+			log.debug(getName() + " writing " + encodedPacket);
+			webSocket.writeTextFrame(encodedPacket);
+		}
 	}
 
 	@Override

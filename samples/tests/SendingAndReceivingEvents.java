@@ -1,5 +1,6 @@
 import com.nhncorp.mods.socket.io.SocketIOServer;
 import com.nhncorp.mods.socket.io.SocketIOSocket;
+import com.nhncorp.mods.socket.io.impl.Configurer;
 import com.nhncorp.mods.socket.io.impl.DefaultSocketIOServer;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.Vertx;
@@ -26,6 +27,12 @@ public class SendingAndReceivingEvents extends Verticle {
 		int port = 9191;
 		HttpServer server = vertx.createHttpServer();
 		final SocketIOServer io = new DefaultSocketIOServer(vertx, server);
+
+//		io.configure(new Configurer() {
+//			public void configure(JsonObject config) {
+//				config.putString("transports", "websocket,flashsocket,xhr-polling,jsonp-polling,htmlfile");
+//			}
+//		});
 
 		io.sockets().onConnection(new Handler<SocketIOSocket>() {
 			public void handle(final SocketIOSocket socket) {

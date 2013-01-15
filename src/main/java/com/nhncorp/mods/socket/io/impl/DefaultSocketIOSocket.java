@@ -33,7 +33,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	private Map<String, Handler<JsonArray>> acks;
 	private boolean disconnected;
 	private Store store;
-	private Set<String> addresses;
+	private Map<String, Handler> handlerMap;
 
 	public DefaultSocketIOSocket(Manager manager, String id, Namespace namespace, boolean readable, Handler<SocketIOSocket> socketHandler) {
 		this.manager = manager;
@@ -45,7 +45,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 		this.parser = new Parser();
 		this.socketHandler = socketHandler;
 		this.acks = new ConcurrentHashMap<>();
-		this.addresses = vertx.sharedData().getSet(this.getId() + ":addresses");
+		this.handlerMap = new ConcurrentHashMap<>();
 		setupFlags();
 	}
 
@@ -289,12 +289,13 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	 */
 	public void on(String event, final Handler<JsonObject> handler) {
 		String address = id + ":" + namespace.getName() + ":" + event;
-		vertx.eventBus().registerHandler(address, new Handler<Message<JsonObject>>() {
+		Handler<Message<JsonObject>> localHandler = new Handler<Message<JsonObject>>() {
 			public void handle(Message<JsonObject> event) {
 				handler.handle(event.body);
 			}
-		});
-		addresses.add(address);
+		};
+		vertx.eventBus().registerHandler(address, localHandler);
+		handlerMap.put(address, localHandler);
 	}
 
 	/**
@@ -357,9 +358,11 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	public void onDisconnect(String reason) {
 		if(!this.disconnected) {
 			emitDisconnect(reason);
-			for(String address : addresses) {
-				vertx.eventBus().unregisterHandler(address);
+			for(Map.Entry<String, Handler> entry : handlerMap.entrySet()) {
+				vertx.eventBus().unregisterHandler(entry.getKey(), entry.getValue());
+				handlerMap.remove(entry.getKey());
 			}
+			handlerMap.clear();
 			this.disconnected = true;
 		}
 	}

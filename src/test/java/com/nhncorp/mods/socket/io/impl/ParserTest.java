@@ -80,7 +80,9 @@ public class ParserTest {
 		args.addObject(new JsonObject().putString("first name", "keesun"));
 		packet.putArray("args", args);
 
-		assertThat(parser.encodePacket(packet), is("5:::{\"args\":[\"whiteship\",{\"first name\":\"keesun\"}],\"name\":\"hello\"}"));
+		String encodedString = parser.encodePacket(packet);
+		assertThat(encodedString.contains("hello"), is(true));
+		assertThat(encodedString.contains("whiteship"), is(true));
 	}
 
 }

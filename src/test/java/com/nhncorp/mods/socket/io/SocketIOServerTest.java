@@ -8,6 +8,10 @@ import org.vertx.java.core.eventbus.Message;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.impl.VertxInternal;
 import org.vertx.java.core.json.JsonObject;
+import org.vertx.java.core.shareddata.impl.SharedMap;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Keesun Baik
