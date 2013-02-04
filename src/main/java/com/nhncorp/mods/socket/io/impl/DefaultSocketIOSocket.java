@@ -11,7 +11,6 @@ import org.vertx.java.core.json.JsonObject;
 
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -324,7 +323,29 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 			}
 		}
 
-		vertx.eventBus().send(id + ":" + namespace.getName() + ":" + name, packet);
+		String address = id + ":" + namespace.getName() + ":" + name;
+		if(name.equals("disconnect")) {
+			sendAndClear(address, packet);
+		} else {
+			send(address, packet);
+		}
+	}
+
+	private void send(String address, JsonObject packet) {
+		vertx.eventBus().send(address, packet);
+	}
+
+	private void sendAndClear(String address, JsonObject packet) {
+		vertx.eventBus().send(address, packet, new Handler<Message<JsonObject>>() {
+			@Override
+			public void handle(Message<JsonObject> event) {
+				for(Map.Entry<String, Handler> entry : handlerMap.entrySet()) {
+					vertx.eventBus().unregisterHandler(entry.getKey(), entry.getValue());
+					handlerMap.remove(entry.getKey());
+				}
+				handlerMap.clear();
+			}
+		});
 	}
 
 	private JsonObject flatten(JsonArray jsonArray) {
@@ -358,11 +379,6 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	public void onDisconnect(String reason) {
 		if(!this.disconnected) {
 			emitDisconnect(reason);
-			for(Map.Entry<String, Handler> entry : handlerMap.entrySet()) {
-				vertx.eventBus().unregisterHandler(entry.getKey(), entry.getValue());
-				handlerMap.remove(entry.getKey());
-			}
-			handlerMap.clear();
 			this.disconnected = true;
 		}
 	}

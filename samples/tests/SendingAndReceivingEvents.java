@@ -84,6 +84,7 @@ public class SendingAndReceivingEvents extends Verticle {
 
 				socket.onDisconnect(new Handler<JsonObject>() {
 					public void handle(JsonObject event) {
+						System.out.println("disconnect");
 						io.sockets().emit("user disconnected");
 					}
 				});
