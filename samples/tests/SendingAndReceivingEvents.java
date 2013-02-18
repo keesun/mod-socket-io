@@ -28,11 +28,12 @@ public class SendingAndReceivingEvents extends Verticle {
 		HttpServer server = vertx.createHttpServer();
 		final SocketIOServer io = new DefaultSocketIOServer(vertx, server);
 
-//		io.configure(new Configurer() {
-//			public void configure(JsonObject config) {
+		io.configure(new Configurer() {
+			public void configure(JsonObject config) {
 //				config.putString("transports", "websocket,flashsocket,xhr-polling,jsonp-polling,htmlfile");
-//			}
-//		});
+				config.putString("transports", "xhr-polling,jsonp-polling,htmlfile");
+			}
+		});
 
 		io.sockets().onConnection(new Handler<SocketIOSocket>() {
 			public void handle(final SocketIOSocket socket) {

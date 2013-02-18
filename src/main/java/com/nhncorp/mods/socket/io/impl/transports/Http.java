@@ -36,6 +36,9 @@ public abstract class Http extends Transport {
 	 */
 	@Override
 	protected void handleRequest() {
+		Map<String, String> params = request.params();
+		String tValue = params.get("t");
+		log.debug(tValue);
 
 		// Always set the response in case an error is returned to the client
 		this.response = request.response;

@@ -1,6 +1,7 @@
 package com.nhncorp.mods.socket.io.impl;
 
 import org.junit.Test;
+import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.json.JsonArray;
 import org.vertx.java.core.json.JsonObject;
 
@@ -83,6 +84,21 @@ public class ParserTest {
 		String encodedString = parser.encodePacket(packet);
 		assertThat(encodedString.contains("hello"), is(true));
 		assertThat(encodedString.contains("whiteship"), is(true));
+	}
+
+	@Test
+	public void decodePayload(){
+		String data = "5:::{\"name\":\"hello\",\"args\":[\"whiteship\",{\"first name\":\"keesun\"}]}";
+		Buffer buffer = new Buffer();
+		buffer.appendString("\ufffd");
+		buffer.appendString("\ufffd");
+		buffer.appendInt(data.length());
+		buffer.appendString(data);
+
+		Parser parser = new Parser();
+
+		List<JsonObject> datas =  parser.decodePayload(new Buffer(data));
+		assertThat(datas.size(), is(1));
 	}
 
 }

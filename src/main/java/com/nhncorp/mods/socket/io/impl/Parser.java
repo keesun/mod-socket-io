@@ -239,9 +239,11 @@ public class Parser {
 
 		if(data.getString(0, 1).equals("\ufffd")) {
 			for(int i = 1, length = 0 ; i < data.length() ; i++) {
-				if(data.getString(i, 1).equals("\ufffd")) {
-					ret.add(decodePacket(data.getString(i+1, length)));
-					i += length + 1;
+				if(data.getString(i, i+1).equals("\ufffd")) {
+					int start = i + 1;
+					int end = start + length;
+					ret.add(decodePacket(data.getString(i+1, end)));
+					i += end + 1;
 					length = 0;
 				} else {
 					length += data.getInt(i);
