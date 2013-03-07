@@ -34,6 +34,8 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	private Store store;
 	private Map<String, Handler> handlerMap;
 
+	private Handler<JsonObject> disconnectHandler;
+
 	public DefaultSocketIOSocket(Manager manager, String id, Namespace namespace, boolean readable, Handler<SocketIOSocket> socketHandler) {
 		this.manager = manager;
 		this.store = manager.getStore();
@@ -87,8 +89,8 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 		return this;
 	}
 
-	public void onDisconnect(Handler<JsonObject> handler) {
-		this.on("disconnect", handler);
+	public void onDisconnect(final Handler<JsonObject> handler) {
+		this.disconnectHandler = handler;
 	}
 
 	@Override
@@ -325,7 +327,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 
 		String address = id + ":" + namespace.getName() + ":" + name;
 		if(name.equals("disconnect")) {
-			sendAndClear(address, packet);
+			disconnect(address, packet);
 		} else {
 			send(address, packet);
 		}
@@ -335,17 +337,13 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 		vertx.eventBus().send(address, packet);
 	}
 
-	private void sendAndClear(String address, JsonObject packet) {
-		vertx.eventBus().send(address, packet, new Handler<Message<JsonObject>>() {
-			@Override
-			public void handle(Message<JsonObject> event) {
-				for(Map.Entry<String, Handler> entry : handlerMap.entrySet()) {
-					vertx.eventBus().unregisterHandler(entry.getKey(), entry.getValue());
-					handlerMap.remove(entry.getKey());
-				}
-				handlerMap.clear();
-			}
-		});
+	private void disconnect(String address, JsonObject packet) {
+		this.disconnectHandler.handle(packet);
+		for(Map.Entry<String, Handler> entry : handlerMap.entrySet()) {
+			vertx.eventBus().unregisterHandler(entry.getKey(), entry.getValue());
+			handlerMap.remove(entry.getKey());
+		}
+		handlerMap.clear();
 	}
 
 	private JsonObject flatten(JsonArray jsonArray) {

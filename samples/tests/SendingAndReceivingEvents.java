@@ -30,8 +30,8 @@ public class SendingAndReceivingEvents extends Verticle {
 
 		io.configure(new Configurer() {
 			public void configure(JsonObject config) {
-//				config.putString("transports", "websocket,flashsocket,xhr-polling,jsonp-polling,htmlfile");
-				config.putString("transports", "xhr-polling,jsonp-polling,htmlfile");
+				config.putString("transports", "websocket,flashsocket,xhr-polling,jsonp-polling,htmlfile");
+//				config.putString("transports", "xhr-polling,jsonp-polling,htmlfile");
 			}
 		});
 

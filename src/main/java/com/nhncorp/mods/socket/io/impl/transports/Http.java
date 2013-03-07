@@ -1,6 +1,8 @@
 package com.nhncorp.mods.socket.io.impl.transports;
 
+import com.nhncorp.mods.socket.io.common.RequestUtils;
 import com.nhncorp.mods.socket.io.impl.ClientData;
+import com.nhncorp.mods.socket.io.impl.HandshakeData;
 import com.nhncorp.mods.socket.io.impl.Manager;
 import com.nhncorp.mods.socket.io.impl.Transport;
 import org.slf4j.Logger;
@@ -22,8 +24,9 @@ import java.util.Map;
 public abstract class Http extends Transport {
 
 	private static final Logger log = LoggerFactory.getLogger(Http.class);
-
+	private static final long REQUEST_TTL = 10 * 1000; // 요청의 유효 시간을 10초로 지정한다.
 	protected HttpServerResponse response;
+	protected boolean isValid = true;
 
 	public Http(Manager manager, ClientData clientData) {
 		super(manager, clientData);
@@ -36,14 +39,20 @@ public abstract class Http extends Transport {
 	 */
 	@Override
 	protected void handleRequest() {
-		Map<String, String> params = request.params();
-		String tValue = params.get("t");
-		log.debug(tValue);
-
 		// Always set the response in case an error is returned to the client
 		this.response = request.response;
 
-		if(!request.method.toUpperCase().equals("POST")) {
+		this.isValid = isValidRequest();
+		if (!this.isValid) {
+			String clientIp = RequestUtils.getRemoteAddress(request);
+			log.debug("invalid client ip is '" + clientIp + "'");
+			response.statusCode = 200;
+			response.end();
+			response.close();
+			return;
+		}
+
+		if (!request.method.toUpperCase().equals("POST")) {
 			super.handleRequest();
 		} else {
 			final Buffer buffer = new Buffer(0);
@@ -62,9 +71,10 @@ public abstract class Http extends Transport {
 			request.dataHandler(new Handler<Buffer>() {
 				public void handle(Buffer data) {
 					buffer.appendBuffer(data);
-					if(buffer.length() >= manager.getSettings().getDestryBufferSize()) {
+					if (buffer.length() >= manager.getSettings().getDestryBufferSize()) {
 						resetBuffer(buffer);
 						request.response.end();
+						request.response.close();
 					}
 				}
 			});
@@ -73,6 +83,7 @@ public abstract class Http extends Transport {
 				public void handle(Void event) {
 					res.statusCode = 200;
 					res.end("1");
+					res.close();
 
 					onData(isPostEncoded() ? parseeData(buffer) : buffer);
 				}
@@ -87,6 +98,38 @@ public abstract class Http extends Transport {
 			});
 		}
 
+	}
+
+	protected boolean isValidRequest() {
+		String tValue = request.params().get("t");
+		if (tValue == null) {
+			log.debug("[Http] Invalid request. 'it doesn't have 't' parameter', uri=" + request.uri);
+			return false;
+		}
+
+		try {
+			long newTime = Long.parseLong(tValue);
+			HandshakeData handshakeData = manager.handshakeData(clientData.getId());
+
+			if(handshakeData == null) {
+				return false;
+			}
+
+			long oldTime = handshakeData.getLastRequestTime();
+
+			if (oldTime != 0 && oldTime - newTime > REQUEST_TTL) {
+				// 먼저 요청보다 TTL 시간보다 더 이전이라면  잘못된 요청으로 무시한다.
+				log.debug("[Http] Invalid request, 'it's 't' parameter value(" + newTime
+						+ ") is older then the last time(" + oldTime + ")', uri=" + request.uri);
+				return false;
+			}
+			handshakeData.setLastRequestTime(newTime);
+		} catch (NumberFormatException nfe) {
+			log.debug("[Http] Invalid request. 'it doesn't have 't' parameter', uri=" + request.uri);
+			return false;
+		}
+
+		return true;
 	}
 
 	private Buffer parseeData(Buffer buffer) {

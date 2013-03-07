@@ -148,7 +148,7 @@ public class Namespace implements Shareable {
 
 	/**
 	 * Emits to everyone (override).
-	 * 
+	 *
 	 * @see "SocketNamespace.prototype.emit"
 	 */
 	public void emit(String event, JsonObject jsonObject) {

@@ -33,6 +33,11 @@ public class HandshakeData extends JsonObject implements Shareable {
 	// query: data.query          // <Object> the result of url.parse().query or a empty object
 	private Map<String, String> queryParams;
 
+	/**
+	 * @since 2013.01.18
+	 */
+	private long lastRequestTime = 0; // valid parameter
+
 	public HandshakeData(ClientData clientData) {
 		Date now = new Date();
 		this.headers = clientData.getHeaders();
@@ -106,5 +111,13 @@ public class HandshakeData extends JsonObject implements Shareable {
 
 	public void setQueryParams(Map<String, String> queryParams) {
 		this.queryParams = queryParams;
+	}
+
+	public Long getLastRequestTime() {
+		return lastRequestTime;
+	}
+
+	public void setLastRequestTime(Long lastRequestTime) {
+		this.lastRequestTime = lastRequestTime;
 	}
 }

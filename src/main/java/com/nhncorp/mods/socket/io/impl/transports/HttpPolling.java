@@ -76,7 +76,7 @@ public abstract class HttpPolling extends Http {
 	protected void handleRequest() {
 		super.handleRequest();
 
-		if(request.method.equals("GET")) {
+		if(isValid && request.method.equals("GET")) {
 			this.pollTimeout = vertx.setTimer(manager.getSettings().getPollingDuration() * 1000, new Handler<Long>() {
 				public void handle(Long event) {
 					if(isOpen()) {
