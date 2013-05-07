@@ -27,100 +27,88 @@ targetCompatibility = '1.7'
 jar.enabled = true // We don't produce a jar
 
 configurations {
-  provided
+    provided
 }
 
 repositories {
-  maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-  mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    mavenCentral()
 }
 
 dependencies {
-  compile      "org.springframework:spring-beans:$springVersion"
-  compile      "org.slf4j:slf4j-api:$slf4jVersion"
-  compile      "ch.qos.logback:logback-classic:1.0.6"
-  compile     "org.vert-x:vertx-core:$vertxVersion"
-  compile     "org.vert-x:vertx-platform:$vertxVersion"
+    compile "org.springframework:spring-beans:$springVersion"
+    compile "org.slf4j:slf4j-api:$slf4jVersion"
+    compile "ch.qos.logback:logback-classic:1.0.6"
+    compile "org.vert-x:vertx-core:$vertxVersion"
+    compile "org.vert-x:vertx-platform:$vertxVersion"
 
-  testCompile  "org.vert-x:vertx-lang-java:$vertxVersion"
-  testCompile  "org.vert-x:vertx-lang-rhino:$vertxVersion"
-  testCompile( "org.vert-x:vertx-testframework:$vertxVersion" ) {
-    transitive = false
-  }
-  testCompile  "org.mozilla:rhino:$rhinoVersion"
-  testCompile  "junit:junit:$junitVersion"
-  testCompile  "org.mockito:mockito-all:1.9.0"
+    testCompile "org.vert-x:vertx-lang-java:$vertxVersion"
+    testCompile "org.vert-x:vertx-lang-rhino:$vertxVersion"
+    testCompile("org.vert-x:vertx-testframework:$vertxVersion") {
+        transitive = false
+    }
+    testCompile "org.mozilla:rhino:$rhinoVersion"
+    testCompile "junit:junit:$junitVersion"
+    testCompile "org.mockito:mockito-all:1.9.0"
 }
 
 sourceSets {
-  main {
-    compileClasspath = compileClasspath + configurations.provided
-  }
+    main {
+        compileClasspath = compileClasspath + configurations.provided
+    }
 }
 
-task copyMod( type:Copy, dependsOn: 'classes' ) {
-  into "build/mod/$modulename-v$version"
-  from 'build/classes/main'
-  from 'src/main/conf'
-  into( 'lib' ) {
-    from configurations.compile
-  }
-  into( 'static' ) {
-    from 'build/resources/main'
-  }
+task copyMod(type: Copy, dependsOn: 'classes') {
+    into "build/mod/$modulename-v$version"
+    from 'build/classes/main'
+    from 'src/main/conf'
+    into('lib') {
+        from configurations.compile
+    }
+    into('static') {
+        from 'build/resources/main'
+    }
 }
 
 // Package into build/libs/mod.zip
-task dist( type: Zip, dependsOn: 'copyMod' ) {
-  group = 'vert.x'
-  description = "Assembles a vert.x module in 'mod.zip' format"
-  destinationDir = project.file('build/libs')
-  archiveName = 'mod.zip'
-  from project.file("build/mod")
+task dist(type: Zip, dependsOn: 'copyMod') {
+    group = 'vert.x'
+    description = "Assembles a vert.x module in 'mod.zip' format"
+    destinationDir = project.file('build/libs')
+    archiveName = 'mod.zip'
+    from project.file("build/mod")
 }
 
 
-task prepareVertxTest(type: Sync, dependsOn: 'copyMod' ) {
-  from 'build/mod'
-  into 'build/tmp/mod-test'
+task prepareVertxTest(type: Sync, dependsOn: 'copyMod') {
+    from 'build/mod'
+    into 'build/tmp/mod-test'
 }
 
 task newPom << {
-  pom{}.writeTo("build/pom.xml")
+    pom {}.writeTo("build/pom.xml")
 }
 
-task sourcesJar(type: Jar, dependsOn:classes) {
+task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
 
 test {
-  // Can't have the app on the vert.x classpath
-  classpath = files( classpath.findAll {
-    !( it.toString() ==~ /.+build\/(classes|resources)\/main$/ )
-  } )
+    // Show output
+    testLogging.showStandardStreams = true
 
-  // Some vert.x properties
-  systemProperty 'vertx.test.timeout', 15
-  systemProperty 'vertx.mods', "$projectDir/build/tmp/mod-test"
-  systemProperty 'vertx.version', "$project.version"
-
-  // Show output
-  testLogging.showStandardStreams = true
-
-  // No idea why we need to depend on testClasses...
-  dependsOn << [ 'testClasses', 'copyMod', 'prepareVertxTest' ]
+    dependsOn << ['copyMod', 'prepareVertxTest']
 }
 
-
 task collectDeps(type: Copy) {
-  group = 'vert.x'
-  description = 'conveniently collect dependencies for other IDEs'
-  destinationDir = file("build/deps")
-  into("compile") {
-    from configurations.compile
-  }
-  into("test") {
-    from configurations.testCompile
-  }
+    group = 'vert.x'
+    description = 'conveniently collect dependencies for other IDEs'
+    destinationDir = file("build/deps")
+    into("compile") {
+        from configurations.compile
+    }
+    into("test") {
+        from configurations.testCompile
+    }
 }
