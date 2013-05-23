@@ -162,6 +162,14 @@ public class Namespace implements Shareable {
 		packet(packet);
 	}
 
+	public void emit(String event, String data) {
+		JsonObject packet = new JsonObject();
+		packet.putString("type", "event");
+		packet.putString("name", event);
+		packet.putArray("args", new JsonArray().addString(data));
+		packet(packet);
+	}
+
 	/**
 	 * Retrieves or creates a write-only socket for a client, unless specified.
 	 *

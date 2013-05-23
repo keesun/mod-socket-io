@@ -338,7 +338,10 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 	}
 
 	private void disconnect(String address, JsonObject packet) {
-		this.disconnectHandler.handle(packet);
+		if(this.disconnectHandler != null) {
+			this.disconnectHandler.handle(packet);
+		}
+
 		for(Map.Entry<String, Handler> entry : handlerMap.entrySet()) {
 			vertx.eventBus().unregisterHandler(entry.getKey(), entry.getValue());
 			handlerMap.remove(entry.getKey());

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Socket.io tests</title>
+	<link href="/js/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/js/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link href="/js/bootstrap/css/docs.css" rel="stylesheet">
+	<link href="/css/prettify.css" rel="stylesheet">
+	<style>
+			/*body {*/
+			/*padding-top: 60px;*/
+			/*}*/
+	</style>
+</head>
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</a>
+			<a class="brand" href="#">Socket.io Test</a>
+			<div class="nav-collapse collapse">
+				<ul class="nav">
+					<li class="active"><a href="/">Home</a></li>
+					<li><a href="#about">About</a></li>
+					<li><a href="#contact">Contact</a></li>
+				</ul>
+			</div><!--/.nav-collapse -->
+		</div>
+	</div>
+</div>
+<header class="jumbotron subhead" id="overview">
+	<div class="container">
+		<h1><a href="https://github.com/keesun/mod-socket-io/issues/5">ISSUE #5</a></h1>
+		<p class="lead">Using namespace</p>
+	</div>
+</header>
+
+<div class="container">
+<div id="myCarousel" class="carousel slide">
+<div class="carousel-inner">
+
+    <div class="item active">
+        <div class="page-header">
+            <h1 id="namespaceAuthTest">Namespace authorization</h1>
+        </div>
+        <label>Socket.io Server URL</label>
+        <input id="urlInput" type="text" value="http://localhost:9191">
+        <span class="help-block">Please input the Socket.io server to connect.</span>
+        <button id="connectBtn" class="btn">Connect</button>
+        <button id="newChannelBtn" class="btn">New Channel(news)</button>
+        <button id="connectNewsBtn" class="btn">Connect to News Channel</button>
+        <span class="help-inline"></span>
+        <hr class="soften">
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="pull-right"><a href="#">Back to top</a></p>
+            <p>For more information, come and get some, <a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a>.</p>
+            <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+            <p>Icons from <a href="http://glyphicons.com">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+            <p>Designs from <a href="http://twitter.github.com/bootstrap">Twitter, Bootsrap</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
+            <ul class="footer-links">
+                <li><a href="http://vertx.io">Vert.x</a></li>
+                <li><a href="http://socket.io">Socket.io</a></li>
+                <li><a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a></li>
+            </ul>
+        </div>
+    </footer>
+</div>
+</div>
+</div>
+
+<script src="/js/jquery-1.7.2.min.js"></script>
+<script src="/js/bootstrap/js/bootstrap.min.js"></script>
+<script src="/js/socket.io-0.9.10.js"></script>
+<script src="/js/prettify.js"></script>
+<script type="text/javascript">
+	$(function(){
+        var socket;
+
+        $('#connectBtn').click(function(){
+            socket = io.connect($('#urlInput').val());
+            socket.on("connect", function(){
+                console.log("connected");
+            });
+        })
+
+        $('#newChannelBtn').click(function(){
+            socket.emit('newchannel', {channel:'news'});
+        });
+
+        $('#connectNewsBtn').click(function(){
+           var newsSocket = io.connect($('#urlInput').val() + "/news");
+            newsSocket.on('connect', function(){
+                console.log('connected to news channel');
+                newsSocket.emit('message', {data:'hello news channel'});
+            });
+            newsSocket.on('message', function(data) {
+               console.log(data);
+            });
+        });
+	});
+</script>
+</body>
+</html>
