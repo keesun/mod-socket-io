@@ -162,6 +162,12 @@ public class Namespace implements Shareable {
 		packet(packet);
 	}
 
+	/**
+	 * Emit String data
+	 * 
+	 * @param event
+	 * @param data
+	 */
 	public void emit(String event, String data) {
 		JsonObject packet = new JsonObject();
 		packet.putString("type", "event");
