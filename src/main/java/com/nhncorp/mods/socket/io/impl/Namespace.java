@@ -164,7 +164,7 @@ public class Namespace implements Shareable {
 
 	/**
 	 * Emit String data
-	 * 
+	 *
 	 * @param event
 	 * @param data
 	 */

@@ -42,39 +42,25 @@
 </header>
 
 <div class="container">
-<div id="myCarousel" class="carousel slide">
-<div class="carousel-inner">
-
     <div class="item active">
         <div class="page-header">
-            <h1 id="namespaceAuthTest">Namespace authorization</h1>
+            <h1>Namespace</h1>
         </div>
         <label>Socket.io Server URL</label>
         <input id="urlInput" type="text" value="http://localhost:9191">
-        <span class="help-block">Please input the Socket.io server to connect.</span>
-        <button id="connectBtn" class="btn">Connect</button>
-        <button id="newChannelBtn" class="btn">New Channel(news)</button>
-        <button id="connectNewsBtn" class="btn">Connect to News Channel</button>
-        <span class="help-inline"></span>
-        <hr class="soften">
     </div>
-
-    <footer class="footer">
-        <div class="container">
-            <p class="pull-right"><a href="#">Back to top</a></p>
-            <p>For more information, come and get some, <a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a>.</p>
-            <p>Code licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>. Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-            <p>Icons from <a href="http://glyphicons.com">Glyphicons Free</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-            <p>Designs from <a href="http://twitter.github.com/bootstrap">Twitter, Bootsrap</a>, licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>.</p>
-            <ul class="footer-links">
-                <li><a href="http://vertx.io">Vert.x</a></li>
-                <li><a href="http://socket.io">Socket.io</a></li>
-                <li><a href="https://github.com/keesun/mod-socket-io">mod-socket-io</a></li>
-            </ul>
-        </div>
-    </footer>
-</div>
-</div>
+    <ol>
+        <li><button id="connectBtn" class="btn">Connect</button></li>
+        <li><button id="newChannelBtn" class="btn">Create News Channel (optional)</button></li>
+        <li><button id="connectNewsBtn" class="btn">Connect to News Channel</button></li>
+    </ol>
+    <hr>
+    <ul id="console" class="unstyled"></ul>
+    <hr>
+    <div>
+        <input id="msgInput" type="text" class="span5" placeholder="input message">
+        <button id="sendBtn">Send</button>
+    </div>
 </div>
 
 <script src="/js/jquery-1.7.2.min.js"></script>
@@ -83,28 +69,38 @@
 <script src="/js/prettify.js"></script>
 <script type="text/javascript">
 	$(function(){
-        var socket;
+        var socket, newsSocket;
+        var console = $('#console');
+
+        var log = function(msg){
+            console.append('<li>' + msg + '</li>');
+        };
 
         $('#connectBtn').click(function(){
             socket = io.connect($('#urlInput').val());
             socket.on("connect", function(){
-                console.log("connected");
+                log("connected");
             });
-        })
+        });
 
         $('#newChannelBtn').click(function(){
             socket.emit('newchannel', {channel:'news'});
         });
 
         $('#connectNewsBtn').click(function(){
-           var newsSocket = io.connect($('#urlInput').val() + "/news");
+            newsSocket = io.connect($('#urlInput').val() + "/news");
             newsSocket.on('connect', function(){
-                console.log('connected to news channel');
+                log('connected to news channel');
                 newsSocket.emit('message', {data:'hello news channel'});
             });
             newsSocket.on('message', function(data) {
-               console.log(data);
+               log(data);
             });
+        });
+
+        $('#sendBtn').click(function(){
+            var msg = $('#msgInput').val();
+            newsSocket.emit('message', {data:msg});
         });
 	});
 </script>
