@@ -40,12 +40,26 @@ dependencies {
     compile "org.springframework:spring-beans:$springVersion"
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "ch.qos.logback:logback-classic:1.0.6"
-    compile fileTree(dir: 'libs', include: '*.jar')
+    compile "io.vertx:vertx-core:$vertxVersion"
+    compile "io.vertx:vertx-platform:$vertxVersion"
 
-    testCompile fileTree(dir: 'libs', include: '*.jar')
+    testCompile "io.vertx:testtools:$toolsVersion"
     testCompile "org.mozilla:rhino:$rhinoVersion"
     testCompile "junit:junit:$junitVersion"
     testCompile "org.mockito:mockito-all:1.9.0"
+}
+
+buildscript {
+
+    repositories {
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "io.vertx:vertx-core:$vertxVersion"
+        classpath "io.vertx:vertx-platform:$vertxVersion"
+    }
 }
 
 sourceSets {
