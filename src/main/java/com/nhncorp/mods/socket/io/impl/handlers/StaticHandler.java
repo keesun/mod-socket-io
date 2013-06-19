@@ -33,7 +33,7 @@ public class StaticHandler {
 
 	public void handle(ClientData clientData) {
 		HttpServerRequest req = clientData.getRequest();
-		HttpServerResponse res = req.response;
+		HttpServerResponse res = req.response();
 		String requestedFileName = clientData.getPath();
 		String resourceRootDir = getRootDir();
 
@@ -42,22 +42,26 @@ public class StaticHandler {
 			copyFilesToDir();
 		}
 
-		switch (requestedFileName) {
-			case "/static/flashsocket/WebSocketMainInsecure.swf":
-				res.sendFile(resourceRootDir + "/WebSocketMainInsecure.swf");
-				break;
-			case "/static/flashsocket/WebSocketMain.swf":
-				res.sendFile(resourceRootDir + "/WebSocketMain.swf");
-				break;
-			case "/socket.io.js":
-				res.sendFile(resourceRootDir + "/socket.io.js");
-				break;
-			case "/socket.io.min.js":
-				res.sendFile(resourceRootDir + "/socket.io.min.js");
-				break;
-			default:
-				throw new IllegalArgumentException(requestedFileName);
-		}
+        switch (requestedFileName) {
+            case "/static/flashsocket/WebSocketMainInsecure.swf":
+                res.sendFile(resourceRootDir + "/WebSocketMainInsecure.swf");
+
+                break;
+            case "/static/flashsocket/WebSocketMain.swf":
+                res.sendFile(resourceRootDir + "/WebSocketMain.swf");
+
+                break;
+            case "/socket.io.js":
+                res.sendFile(resourceRootDir + "/socket.io.js");
+
+                break;
+            case "/socket.io.min.js":
+                res.sendFile(resourceRootDir + "/socket.io.min.js");
+
+                break;
+            default:
+                throw new IllegalArgumentException(requestedFileName);
+        }
 		res.close();
 	}
 

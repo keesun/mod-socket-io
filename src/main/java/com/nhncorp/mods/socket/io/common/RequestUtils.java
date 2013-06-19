@@ -1,6 +1,6 @@
 package com.nhncorp.mods.socket.io.common;
 
-import org.jboss.netty.channel.Channel;
+import io.netty.channel.Channel;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.impl.AbstractConnection;
 import org.vertx.java.core.http.impl.DefaultHttpServerRequest;
@@ -12,6 +12,7 @@ import java.net.SocketAddress;
 
 /**
  * @author Keesun Baik
+ * @
  */
 public class RequestUtils {
 
@@ -23,7 +24,7 @@ public class RequestUtils {
 		Channel channel = (Channel)getPrivateMember(conn, "channel", ConnectionBase.class);
 
 		if(channel != null) {
-			SocketAddress remoteAddress = channel.getRemoteAddress();
+			SocketAddress remoteAddress = channel.remoteAddress();
 			InetSocketAddress address = (InetSocketAddress) remoteAddress;
 			host = address.getHostString();
 		}

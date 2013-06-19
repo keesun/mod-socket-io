@@ -292,7 +292,7 @@ public class DefaultSocketIOSocket implements SocketIOSocket {
 		String address = id + ":" + namespace.getName() + ":" + event;
 		Handler<Message<JsonObject>> localHandler = new Handler<Message<JsonObject>>() {
 			public void handle(Message<JsonObject> event) {
-				handler.handle(event.body);
+				handler.handle(event.body());
 			}
 		};
 		vertx.eventBus().registerHandler(address, localHandler);

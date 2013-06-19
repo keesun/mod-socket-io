@@ -3,6 +3,7 @@ package com.nhncorp.mods.socket.io.impl.handlers;
 import com.nhncorp.mods.socket.io.impl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vertx.java.core.MultiMap;
 import org.vertx.java.core.http.HttpServerRequest;
 
 import java.util.Map;
@@ -36,10 +37,10 @@ public class HandshakeHandler {
 		final Settings settings = manager.getSettings();
 
 		log.trace("In handshake handler");
-		Map<String, String> reqHeaders = request.headers();
-		final Map<String, Object> resHeaders = request.response.headers();
+		MultiMap reqHeaders = request.headers();
+		final MultiMap resHeaders = request.response().headers();
 		String reqOrigin = reqHeaders.get("Origin");
-		resHeaders.put("CONTENT_TYPE", "text/plain; charset=UTF-8");
+		resHeaders.add("CONTENT_TYPE", "text/plain; charset=UTF-8");
 
 		if (!this.verifyOrigin(reqOrigin)) {
 			manager.writeError(request, 403, "handshake bad origin");
@@ -50,8 +51,8 @@ public class HandshakeHandler {
 
 		if (reqOrigin != null) {
 			// https://developer.mozilla.org/En/HTTP_Access_Control
-			resHeaders.put("Access-Control-Allow-Origin", reqOrigin);
-			resHeaders.put("Access-Control-Allow-Credentials", "true");
+			resHeaders.add("Access-Control-Allow-Origin", reqOrigin);
+			resHeaders.add("Access-Control-Allow-Credentials", "true");
 		}
 
 		authorize(request, handshakeData, new AuthorizationCallback() {
@@ -68,13 +69,13 @@ public class HandshakeHandler {
 							+ settings.getCloseTimeout() + ":"
 							+ settings.getTransports();
 
-					request.response.statusCode = 200;
+					request.response().setStatusCode(200);
 					String jsonp = clientData.getParams().get("jsonp");
 					if(jsonp != null) {
 						result = "io.j[" + jsonp + "](\"" + result + "\");";
-						resHeaders.put("Content-Type", "application/javascript");
+						resHeaders.add("Content-Type", "application/javascript");
 					}
-					request.response.end(result);
+					request.response().end(result);
 
 					manager.getHandshaken().put(id, handshakeData);
 					// self.store.publish('handshake', id, newData || handshakeData);
