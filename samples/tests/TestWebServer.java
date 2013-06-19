@@ -1,8 +1,11 @@
+package tests;
+
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.Vertx;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.http.HttpServerRequest;
-import org.vertx.java.deploy.Verticle;
+import org.vertx.java.core.impl.DefaultVertx;
+import org.vertx.java.platform.Verticle;
 
 /**
  * @author Keesun Baik
@@ -19,20 +22,20 @@ public class TestWebServer extends Verticle {
 	}
 
 	@Override
-	public void start() throws Exception {
+	public void start() {
 		HttpServer server = vertx.createHttpServer();
 		server.requestHandler(new Handler<HttpServerRequest>() {
 			@Override
 			public void handle(HttpServerRequest request) {
 				String filePath = WEB_ROOT;
-				String requestPath = request.path;
+				String requestPath = request.path();
 				if(requestPath.equals("/")) {
 					filePath += "/index.html";
 				} else {
 					filePath += requestPath;
 				}
 
-				request.response.sendFile(filePath);
+				request.response().sendFile(filePath);
 			}
 		});
 
@@ -40,7 +43,7 @@ public class TestWebServer extends Verticle {
 	}
 
 	public static void main(String[] args) throws Exception {
-		Vertx vertx = Vertx.newVertx();
+		Vertx vertx = new DefaultVertx();
 		TestWebServer webServer = new TestWebServer(vertx);
 		webServer.start();
 		Thread.sleep(Long.MAX_VALUE);
