@@ -8,6 +8,7 @@ import com.nhncorp.mods.socket.io.impl.Transport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
+import org.vertx.java.core.MultiMap;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServerResponse;
 import org.vertx.java.core.json.JsonObject;
@@ -40,32 +41,32 @@ public abstract class Http extends Transport {
 	@Override
 	protected void handleRequest() {
 		// Always set the response in case an error is returned to the client
-		this.response = request.response;
+		this.response = request.response();
 
 		this.isValid = isValidRequest();
 		if (!this.isValid) {
 			String clientIp = RequestUtils.getRemoteAddress(request);
 			log.debug("invalid client ip is '" + clientIp + "'");
-			response.statusCode = 200;
+			response.setStatusCode(200);
 			response.end();
 			response.close();
 			return;
 		}
 
-		if (!request.method.toUpperCase().equals("POST")) {
+		if (!request.method().toUpperCase().equals("POST")) {
 			super.handleRequest();
 		} else {
 			final Buffer buffer = new Buffer(0);
-			final HttpServerResponse res = request.response;
+			final HttpServerResponse res = request.response();
 			String origin = request.headers().get("ORIGIN");
-			Map<String, Object> resHeaders = res.headers();
-			resHeaders.put("Content-Length", 1);
-			resHeaders.put("Content-Type", "text/plain; charset=UTF-8");
+			MultiMap resHeaders = res.headers();
+			resHeaders.add("Content-Length", String.valueOf(1));
+			resHeaders.add("Content-Type", "text/plain; charset=UTF-8");
 
 			if (origin != null) {
 				// https://developer.mozilla.org/En/HTTP_Access_Control
-				resHeaders.put("Access-Control-Allow-Origin", origin);
-				resHeaders.put("Access-Control-Allow-Credentials", "true");
+				resHeaders.add("Access-Control-Allow-Origin", origin);
+				resHeaders.add("Access-Control-Allow-Credentials", "true");
 			}
 
 			request.dataHandler(new Handler<Buffer>() {
@@ -73,16 +74,16 @@ public abstract class Http extends Transport {
 					buffer.appendBuffer(data);
 					if (buffer.length() >= manager.getSettings().getDestryBufferSize()) {
 						resetBuffer(buffer);
-						request.response.end();
-						request.response.close();
+						request.response().end();
+						request.response().close();
 					}
 				}
 			});
 
 			request.endHandler(new Handler<Void>() {
 				public void handle(Void event) {
-					res.statusCode = 200;
-					res.end("1");
+					res.setStatusCode(200);
+                    res.end("1");
 					res.close();
 
 					onData(isPostEncoded() ? parseeData(buffer) : buffer);
@@ -90,12 +91,13 @@ public abstract class Http extends Transport {
 			});
 
 			// req.on('close', function () {
-			request.exceptionHandler(new Handler<Exception>() {
-				public void handle(Exception event) {
-					resetBuffer(buffer);
-					onClose();
-				}
-			});
+			request.exceptionHandler(new Handler<Throwable>() {
+                @Override
+                public void handle(Throwable throwable) {
+                    resetBuffer(buffer);
+                    onClose();
+                }
+            });
 		}
 
 	}
@@ -103,7 +105,7 @@ public abstract class Http extends Transport {
 	protected boolean isValidRequest() {
 		String tValue = request.params().get("t");
 		if (tValue == null) {
-			log.debug("[Http] Invalid request. 'it doesn't have 't' parameter', uri=" + request.uri);
+			log.debug("[Http] Invalid request. 'it doesn't have 't' parameter', uri=" + request.uri());
 			return false;
 		}
 
@@ -120,12 +122,12 @@ public abstract class Http extends Transport {
 			if (oldTime != 0 && oldTime - newTime > REQUEST_TTL) {
 				// 먼저 요청보다 TTL 시간보다 더 이전이라면  잘못된 요청으로 무시한다.
 				log.debug("[Http] Invalid request, 'it's 't' parameter value(" + newTime
-						+ ") is older then the last time(" + oldTime + ")', uri=" + request.uri);
+						+ ") is older then the last time(" + oldTime + ")', uri=" + request.uri());
 				return false;
 			}
 			handshakeData.setLastRequestTime(newTime);
 		} catch (NumberFormatException nfe) {
-			log.debug("[Http] Invalid request. 'it doesn't have 't' parameter', uri=" + request.uri);
+			log.debug("[Http] Invalid request. 'it doesn't have 't' parameter', uri=" + request.uri());
 			return false;
 		}
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+apply from: 'gradle/setup.gradle'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
@@ -39,14 +40,9 @@ dependencies {
     compile "org.springframework:spring-beans:$springVersion"
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "ch.qos.logback:logback-classic:1.0.6"
-    compile "org.vert-x:vertx-core:$vertxVersion"
-    compile "org.vert-x:vertx-platform:$vertxVersion"
+    compile fileTree(dir: 'libs', include: '*.jar')
 
-    testCompile "org.vert-x:vertx-lang-java:$vertxVersion"
-    testCompile "org.vert-x:vertx-lang-rhino:$vertxVersion"
-    testCompile("org.vert-x:vertx-testframework:$vertxVersion") {
-        transitive = false
-    }
+    testCompile fileTree(dir: 'libs', include: '*.jar')
     testCompile "org.mozilla:rhino:$rhinoVersion"
     testCompile "junit:junit:$junitVersion"
     testCompile "org.mockito:mockito-all:1.9.0"

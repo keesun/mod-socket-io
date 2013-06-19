@@ -165,16 +165,16 @@ public class Manager {
 		if(req == null) {
 			return;
 		}
-		req.response.statusCode = status;
-		req.response.end(message);
+		req.response().setStatusCode(status);
+		req.response().end(message);
 	}
 
 	public void writeError(HttpServerRequest req, Exception e) {
 		if(req == null) {
 			return;
 		}
-		req.response.statusCode = 500;
-		req.response.end("handshake error");
+		req.response().setStatusCode(500);
+		req.response().end("handshake error");
 	}
 
 	/**
