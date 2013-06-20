@@ -4,6 +4,7 @@ import com.nhncorp.mods.socket.io.impl.ClientData;
 import com.nhncorp.mods.socket.io.impl.Manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vertx.java.core.MultiMap;
 
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -41,18 +42,18 @@ public class XhrPolling extends HttpPolling {
 		super.doWrite(encodedPacket);
 
 		String origin = request.headers().get("Origin");
-		Map<String, Object> resHeaders = response.headers();
-		resHeaders.put("Content-Type", "text/plain; charset=UTF-8");
-		resHeaders.put("Content-Length", encodedPacket == null ? 0 : encodedPacket.getBytes(Charset.forName("UTF-8")).length);
-		resHeaders.put("Connection", "Keep-Alive");
+		MultiMap resHeaders = response.headers();
+		resHeaders.add("Content-Type", "text/plain; charset=UTF-8");
+		resHeaders.add("Content-Length", encodedPacket == null ? "0" : String.valueOf(encodedPacket.getBytes(Charset.forName("UTF-8")).length));
+		resHeaders.add("Connection", "Keep-Alive");
 
 		if(origin != null) {
 			// https://developer.mozilla.org/En/HTTP_Access_Control
-			resHeaders.put("Access-Control-Allow-Origin", origin);
-			resHeaders.put("Access-Control-Allow-Credentials", "true");
+			resHeaders.add("Access-Control-Allow-Origin", origin);
+			resHeaders.add("Access-Control-Allow-Credentials", "true");
 		}
 
-		response.statusCode = 200;
+		response.setStatusCode(200);
 		response.write(encodedPacket);
 		log.debug(this.getName() + " writing " + encodedPacket);
 	}

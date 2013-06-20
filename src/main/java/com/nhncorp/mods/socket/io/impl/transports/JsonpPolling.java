@@ -4,6 +4,7 @@ import com.nhncorp.mods.socket.io.impl.ClientData;
 import com.nhncorp.mods.socket.io.impl.Manager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.vertx.java.core.MultiMap;
 import org.vertx.java.core.json.impl.Json;
 
 import java.nio.charset.Charset;
@@ -46,12 +47,12 @@ public class JsonpPolling extends HttpPolling {
 		String result = Json.encode(encodedPacket);
 		String data = (encodedPacket == null) ? "" : this.head + result + this.foot;
 
-		this.response.statusCode = 200;
-		Map<String,Object> headers = this.response.headers();
-		headers.put("Content-Type", "text/javascript; charset=UTF-8");
-		headers.put("Content-Length", data.getBytes(Charset.forName("UTF-8")).length);
-		headers.put("Connection", "Keep-Alive");
-		headers.put("X-XSS-Protection", "0");
+		this.response.setStatusCode(200);
+		MultiMap headers = this.response.headers();
+		headers.add("Content-Type", "text/javascript; charset=UTF-8");
+		headers.add("Content-Length", String.valueOf(data.getBytes(Charset.forName("UTF-8")).length));
+		headers.add("Connection", "Keep-Alive");
+		headers.add("X-XSS-Protection", "0");
 		response.write(data);
 		log.debug(getName() + " writing " + data);
 	}

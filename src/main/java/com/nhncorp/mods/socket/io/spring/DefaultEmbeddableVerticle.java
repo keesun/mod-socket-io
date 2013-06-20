@@ -4,6 +4,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vertx.java.core.Vertx;
+import org.vertx.java.core.impl.DefaultVertx;
 
 import javax.annotation.PostConstruct;
 
@@ -23,12 +24,12 @@ public abstract class DefaultEmbeddableVerticle implements EmbeddableVerticle {
 		} catch (NoSuchBeanDefinitionException e) {
 			if(host() != null) {
 				if(port() != -1) {
-					vertx = Vertx.newVertx(port(), host());
+                    vertx = new DefaultVertx(port(), host());
 				} else {
-					vertx = Vertx.newVertx(host());
+                    vertx = new DefaultVertx(host());
 				}
 			} else {
-				vertx = Vertx.newVertx();
+                vertx = new DefaultVertx();
 			}
 		}
 

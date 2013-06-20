@@ -58,10 +58,10 @@ public abstract class Transport implements Shareable {
 	 */
 	protected void handleRequest() {
 		if(request != null) {
-			log.debug("setting request " + request.method + " " + request.uri);
+			log.debug("setting request " + request.method() + " " + request.uri());
 		}
 
-		if(clientData.getSocket() != null || request.method.toUpperCase().equals("GET")) {
+		if(clientData.getSocket() != null || request.method().toUpperCase().equals("GET")) {
 //			this.socket = req.socket;
 			this.isOpen = true;
 			this.isDrained = true;

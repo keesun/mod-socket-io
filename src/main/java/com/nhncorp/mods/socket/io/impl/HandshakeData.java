@@ -1,5 +1,6 @@
 package com.nhncorp.mods.socket.io.impl;
 
+import org.vertx.java.core.MultiMap;
 import org.vertx.java.core.json.JsonObject;
 import org.vertx.java.core.shareddata.Shareable;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 public class HandshakeData extends JsonObject implements Shareable {
 
 	// headers: req.headers       // <Object> the headers of the request
-	private Map<String, String> headers;
+	private MultiMap headers;
 	// time: (new Date) +''       // <String> date time of the connection
 	private String time;
 	// address: socket.address()  // <Object> remoteAddress and remotePort object
@@ -31,7 +32,7 @@ public class HandshakeData extends JsonObject implements Shareable {
 	// url: request.url          // <String> the entrance path of the request
 	private String url;
 	// query: data.query          // <Object> the result of url.parse().query or a empty object
-	private Map<String, String> queryParams;
+	private MultiMap queryParams;
 
 	/**
 	 * @since 2013.01.18
@@ -43,13 +44,13 @@ public class HandshakeData extends JsonObject implements Shareable {
 		this.headers = clientData.getHeaders();
 		this.time = now.toString();
 		this.xdomain = clientData.getHeaders().get("Origin") != null;
-		this.secure = clientData.getRequest().uri.contains("https");
+		this.secure = clientData.getRequest().uri().contains("https");
 		this.issued = now.getTime();
-		this.url = clientData.getRequest().uri;
+		this.url = clientData.getRequest().uri();
 		this.queryParams = clientData.getParams();
 	}
 
-	public Map<String, String> getHeaders() {
+	public MultiMap getHeaders() {
 		return headers;
 	}
 
@@ -77,11 +78,11 @@ public class HandshakeData extends JsonObject implements Shareable {
 		return url;
 	}
 
-	public Map<String, String> getQueryParams() {
+	public MultiMap getQueryParams() {
 		return queryParams;
 	}
 
-	public void setHeaders(Map<String, String> headers) {
+	public void setHeaders(MultiMap headers) {
 		this.headers = headers;
 	}
 
@@ -109,7 +110,7 @@ public class HandshakeData extends JsonObject implements Shareable {
 		this.url = url;
 	}
 
-	public void setQueryParams(Map<String, String> queryParams) {
+	public void setQueryParams(MultiMap queryParams) {
 		this.queryParams = queryParams;
 	}
 

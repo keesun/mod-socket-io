@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.buffer.Buffer;
-import org.vertx.java.core.http.WebSocket;
+import org.vertx.java.core.http.ServerWebSocket;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class WebSocketTransport extends Transport {
 
 	private static final Logger log = LoggerFactory.getLogger(WebSocketTransport.class);
 
-	private WebSocket webSocket;
+	private ServerWebSocket webSocket;
 
 	public WebSocketTransport(Manager manager, ClientData clientData) {
 		super(manager, clientData);
@@ -26,17 +26,19 @@ public class WebSocketTransport extends Transport {
 		webSocket = clientData.getSocket();
 
 		if(webSocket != null) {
-			webSocket.exceptionHandler(new Handler<Exception>() {
-				public void handle(Exception e) {
-					end("socket error " + ((e != null) ? e.getMessage() : ""));
-				}
-			});
+			webSocket.exceptionHandler(new Handler<Throwable>() {
+                @Override
+                public void handle(Throwable throwable) {
+                    end("socket error " + ((throwable != null) ? throwable.getMessage() : ""));
+                }
+            });
 
-			webSocket.closedHandler(new Handler<Void>() {
-				public void handle(Void event) {
-					end("socket end");
-				}
-			});
+			webSocket.closeHandler(new Handler<Void>() {
+                @Override
+                public void handle(Void aVoid) {
+                    end("socket end");
+                }
+            });
 
 			webSocket.dataHandler(new Handler<Buffer>() {
 				public void handle(Buffer buffer) {

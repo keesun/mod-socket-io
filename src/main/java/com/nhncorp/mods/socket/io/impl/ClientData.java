@@ -1,6 +1,7 @@
 package com.nhncorp.mods.socket.io.impl;
 
 import com.nhncorp.mods.socket.io.impl.handlers.StaticHandler;
+import org.vertx.java.core.MultiMap;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.ServerWebSocket;
 
@@ -13,8 +14,8 @@ public class ClientData {
 
 	private String namespace;
 	private String query;
-	private Map<String, String> headers;
-	private Map<String, String> params;
+	private MultiMap headers;
+	private MultiMap params;
 	private String path;
 	private int protocol;
 	private String transport;
@@ -27,10 +28,10 @@ public class ClientData {
 	public ClientData(String namespace, HttpServerRequest req) {
 		this.namespace = namespace;
 		this.request = req;
-		this.query = req.query;
+		this.query = req.query();
 		this.headers = req.headers();
 		this.params = req.params();
-		this.path = req.path.substring(namespace.length());
+		this.path = req.path().substring(namespace.length());
 		this.isStatic = StaticHandler.has(this.path);
 
 		if(!isStatic) {
@@ -43,7 +44,7 @@ public class ClientData {
 	}
 
 	public ClientData(ServerWebSocket socket) {
-		String path = socket.path;
+		String path = socket.path();
 		String[] pieces = path.substring(1).split("/");
 
 		if(pieces.length > 1) this.protocol = Integer.parseInt(pieces[1]);
@@ -57,7 +58,7 @@ public class ClientData {
 		return query;
 	}
 
-	public Map<String, String> getHeaders() {
+	public MultiMap getHeaders() {
 		return headers;
 	}
 
@@ -81,7 +82,7 @@ public class ClientData {
 		return isStatic;
 	}
 
-	public Map<String, String> getParams() {
+	public MultiMap getParams() {
 		return params;
 	}
 

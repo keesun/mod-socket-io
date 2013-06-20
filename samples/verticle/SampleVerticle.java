@@ -1,10 +1,12 @@
+package verticle;
+
 import com.nhncorp.mods.socket.io.SocketIOServer;
 import com.nhncorp.mods.socket.io.SocketIOSocket;
 import com.nhncorp.mods.socket.io.impl.DefaultSocketIOServer;
 import org.vertx.java.core.Handler;
 import org.vertx.java.core.http.HttpServer;
 import org.vertx.java.core.json.JsonObject;
-import org.vertx.java.deploy.Verticle;
+import org.vertx.java.platform.Verticle;
 
 /**
  * @author Keesun Baik
@@ -12,7 +14,7 @@ import org.vertx.java.deploy.Verticle;
 public class SampleVerticle extends Verticle {
 
 	@Override
-	public void start() throws Exception {
+	public void start() {
 		int port = 9090;
 		HttpServer server = vertx.createHttpServer();
 		SocketIOServer io = new DefaultSocketIOServer(vertx, server);
@@ -27,7 +29,7 @@ public class SampleVerticle extends Verticle {
 			}
 		});
 
-		System.out.println("server is running on http://localshot:" + port);
+		System.out.println("server is running on http://localhost:" + port);
 		server.listen(port);
 	}
 }

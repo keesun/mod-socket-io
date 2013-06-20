@@ -5,6 +5,7 @@ import com.nhncorp.mods.socket.io.impl.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.vertx.java.core.Handler;
+import org.vertx.java.core.MultiMap;
 import org.vertx.java.core.buffer.Buffer;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.ServerWebSocket;
@@ -41,7 +42,7 @@ public class HttpRequestHandler {
 		Settings settings = manager.getSettings();
 
 		// handle sync disconnect xhrs
-		Map<String, String> params = clientData.getParams();
+		MultiMap params = clientData.getParams();
 		if (params != null && params.get("disconnect") != null) {
 			Transport transport = manager.transport(clientData.getId());
 			if (transport != null && transport.isOpen()) {
@@ -49,9 +50,9 @@ public class HttpRequestHandler {
 			} else {
 				// this.store.publish('disconnect-force:' + data.id);
 			}
-			request.response.statusCode = 200;
-			request.response.end();
-			request.response.close();
+			request.response().setStatusCode(200);
+			request.response().end();
+			request.response().close();
 			return;
 		}
 
@@ -73,9 +74,9 @@ public class HttpRequestHandler {
 					socket.close();
 				}
 				if(request != null) {
-					request.response.statusCode = 200;
-					request.response.end();
-					request.response.close();
+					request.response().setStatusCode(200);
+					request.response().end();
+					request.response().close();
 				}
 				return;
 			}
@@ -85,8 +86,8 @@ public class HttpRequestHandler {
 		HandshakeData handshakeData = manager.handshakeData(clientData.getId());
 		if (transport.isDisconnected()) {
 			// failed during transport setup
-			request.response.end();
-			request.response.close();
+			request.response().end();
+			request.response().close();
 			return;
 		}
 
