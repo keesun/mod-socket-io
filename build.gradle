@@ -37,7 +37,6 @@ repositories {
 }
 
 dependencies {
-    compile "org.springframework:spring-beans:$springVersion"
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "ch.qos.logback:logback-classic:1.0.6"
     compile "io.vertx:vertx-core:$vertxVersion"

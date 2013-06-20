@@ -1,8 +1,8 @@
 package com.nhncorp.mods.socket.io.impl.handlers;
 
+import com.nhncorp.mods.socket.io.common.FileCopyUtils;
 import com.nhncorp.mods.socket.io.impl.ClientData;
 import com.nhncorp.mods.socket.io.impl.Manager;
-import org.springframework.util.FileCopyUtils;
 import org.vertx.java.core.http.HttpServerRequest;
 import org.vertx.java.core.http.HttpServerResponse;
 
