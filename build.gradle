@@ -39,8 +39,8 @@ repositories {
 dependencies {
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile "ch.qos.logback:logback-classic:1.0.6"
-    compile "io.vertx:vertx-core:$vertxVersion"
-    compile "io.vertx:vertx-platform:$vertxVersion"
+    provided "io.vertx:vertx-core:$vertxVersion"
+    provided "io.vertx:vertx-platform:$vertxVersion"
 
     testCompile "io.vertx:testtools:$toolsVersion"
     testCompile "org.mozilla:rhino:$rhinoVersion"
