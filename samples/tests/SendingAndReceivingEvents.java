@@ -72,9 +72,9 @@ public class SendingAndReceivingEvents extends Verticle {
 					}
 				});
 
-				socket.on("broadcast", new Handler<JsonObject>() {
+				socket.on("volatile", new Handler<JsonObject>() {
 					public void handle(JsonObject event) {
-						socket.volatilize().emit("broadcast", new JsonObject().putString("msg", "hello"));
+						socket.volatilize().emit("volatile", new JsonObject().putString("msg", "hello"));
 					}
 				});
 
