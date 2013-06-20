@@ -49,7 +49,6 @@ dependencies {
 }
 
 buildscript {
-
     repositories {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         mavenCentral()
@@ -62,9 +61,7 @@ buildscript {
 }
 
 sourceSets {
-    main {
-        compileClasspath = compileClasspath + configurations.provided
-    }
+    main.compileClasspath += configurations.provided
 }
 
 task copyMod(type: Copy, dependsOn: 'classes') {
