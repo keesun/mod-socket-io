@@ -1,5 +1,3 @@
-package tests;
-
 import com.nhncorp.mods.socket.io.SocketIOServer;
 import com.nhncorp.mods.socket.io.SocketIOSocket;
 import com.nhncorp.mods.socket.io.impl.*;
