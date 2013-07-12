@@ -5,7 +5,7 @@ Now, This module supports the latest version of the socket.io, 0.9.10.
 
 ## Name
 
-The module name is `socket-io`.
+The module name is `mod-socket-io`.
 
 ## Dependency
 
@@ -15,25 +15,32 @@ Add a maven repository contains `mod-socket-io`.
 
 ```groovy
 repositories {
-  maven { url 'http://dev.springsprout.org/nexus/content/groups/public/' }
+  maven { url 'https://github.com/keesun/mvn-repo/raw/master' }
   ...
 }
 ```
 ### Maven
 
 ```xml
-<repositories>
-  <repository>
-    <id>springsprout</id>
-    <url>http://dev.springsprout.org/nexus/content/groups/public/</url>
-  </repository>
-</repositories>
+<repository>
+    <id>my.mvn.repo</id>
+    <url>https://github.com/keesun/mvn-repo/raw/master</url>
+</repository>
 ```
 
 
 Add a dependency.
 
-### Gradle
+### Gradle (for the Vert.x 2.0.0-CR3)
+
+```groovy
+dependencies {
+  compile      "com.nhncorp:mod-socket-io:1.0.0"
+  ...
+}
+```
+
+### Gradle (for the Vert.x 1.3.1.final)
 
 ```groovy
 dependencies {
@@ -42,13 +49,23 @@ dependencies {
 }
 ```
 
-### Maven
+### Maven (for the Vert.x 2.0.0-CR3)
 
 ```maven
 <dependency>
-  <groupId>com.nhncorp</groupId>
-  <artifactId>mod-socket-io</artifactId>
-  <version>0.9.10</version>
+    <groupId>com.nhncorp</groupId>
+    <artifactId>mod-socket-io</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+### Maven (for the Vert.x 1.3.1.final)
+
+```maven
+<dependency>
+    <groupId>com.nhncorp</groupId>
+    <artifactId>mod-socket-io</artifactId>
+    <version>0.9.10</version>
 </dependency>
 ```
 
@@ -159,6 +176,7 @@ And, after you put the module's jar file to you module's classpath. You can code
 
 In the view, you can use the same socket.io javascript like:
 
+```javascript
 	<script type="text/javascript" src="/socket.io/socket.io.js"></script>
 	<script>
 		var socket = io.connect('http://localhost:9090');
@@ -167,3 +185,4 @@ In the view, you can use the same socket.io javascript like:
 			socket.emit('my other event', { my: 'data' });
 		});
 	</script>
+```
