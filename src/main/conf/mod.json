@@ -1,3 +1,8 @@
 {
-
+  "description": "this module implements socket.io server api for the vert.x",
+  "licenses": ["The Apache Software License Version 2.0"],
+  "author": "Keeun Baik",
+  "keywords": ["socket.io", "websocket", "http streaming", "flash socket", "jsonp", "longpolling"],
+  "developers": ["Keesun Baik"],
+  "homepage": "https://github.com/keesun/mod-socket-io"
 }
