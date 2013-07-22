@@ -44,7 +44,7 @@ dependencies {
 
 ```groovy
 dependencies {
-  compile      "com.nhncorp:mod-socket-io:0.9.10"
+  compile      "com.nhncorp:mod-socket-io:0.9.0"
   ...
 }
 ```
@@ -65,7 +65,7 @@ dependencies {
 <dependency>
     <groupId>com.nhncorp</groupId>
     <artifactId>mod-socket-io</artifactId>
-    <version>0.9.10</version>
+    <version>0.9.0</version>
 </dependency>
 ```
 
