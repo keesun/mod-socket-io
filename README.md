@@ -31,6 +31,15 @@ repositories {
 
 Add a dependency.
 
+### Gradle (for the Vert.x 2.0.0-final)
+
+```groovy
+dependencies {
+  compile      "com.nhncorp:mod-socket-io:1.0.1"
+  ...
+}
+```
+
 ### Gradle (for the Vert.x 2.0.0-CR3)
 
 ```groovy
@@ -47,6 +56,16 @@ dependencies {
   compile      "com.nhncorp:mod-socket-io:0.9.0"
   ...
 }
+```
+
+### Maven (for the Vert.x 2.0.0-final)
+
+```maven
+<dependency>
+    <groupId>com.nhncorp</groupId>
+    <artifactId>mod-socket-io</artifactId>
+    <version>1.0.1</version>
+</dependency>
 ```
 
 ### Maven (for the Vert.x 2.0.0-CR3)
