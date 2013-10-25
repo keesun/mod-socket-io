@@ -34,7 +34,6 @@ public class Manager {
 	public static final String DEFAULT_NSP = "";
 
 	private Settings settings;
-//	private Handler<SocketIOSocket> socketHandler;
 	private AuthorizationHandler globalAuthorizationHandler;
 
 	private Map<String, HandshakeData> handshaken;
@@ -497,14 +496,6 @@ public class Manager {
 	public void setSettings(Settings settings) {
 		this.settings = settings;
 	}
-
-//	public Handler<SocketIOSocket> getSocketHandler() {
-//		return socketHandler;
-//	}
-//
-//	public void setSocketHandler(Handler<SocketIOSocket> socketHandler) {
-//		this.socketHandler = socketHandler;
-//	}
 
 	public VertxInternal getVertx() {
 		return vertx;
