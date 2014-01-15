@@ -10,7 +10,7 @@
     <properties>
         <internal.repo.path>file:///workspace/mvn-repo/</internal.repo.path>
         <java.version>1.7</java.version>
-        <vertx.version>2.0.1-final</vertx.version>
+        <vertx.version>2.0.2-final</vertx.version>
     </properties>
 
     <dependencies>
